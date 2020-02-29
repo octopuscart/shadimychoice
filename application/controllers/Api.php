@@ -94,23 +94,39 @@ class Api extends REST_Controller {
     }
 
     function getUserCard_get($userid) {
-        $this->db->where('usercode', $userid);
-        $query = $this->db->get('app_user');
-        $userdata = $query->row();
-        $imagepath = base_url() . "assets/usercard/" . $userdata->cardimage;
-        $this->response(array("imagelink" => $imagepath, "userdata" => $userdata));
+        $this->db->where('card_id', $userid);
+        $query = $this->db->get('card');
+        $userdata = $query->row_array();
+        $userdata['qrcode'] = base_url() . "assets/userqr/" . $userdata['card_id'] . ".png";
+        $this->response($userdata);
     }
 
-    function createUserQrCode_get($userid) {
+    function createUserQrCode($cardid) {
         $this->load->library('phpqr');
-        $this->db->where('usercode', $userid);
-        $query = $this->db->get('app_user');
-        $userdata = $query->row();
-        $filelocation = APPPATH . "../assets/userqr/" . $userdata->usercode . ".png";
-        $linkdata = site_url("Api/getUserCard/" . $userdata->usercode);
+        $filelocation = APPPATH . "../assets/userqr/" . $cardid . ".png";
+        $linkdata = site_url("Api/getUserCard/" . $cardid);
         $this->phpqr->createcode($linkdata, $filelocation);
-        $imagepath = base_url() . "assets/userqr/" . $userdata->usercode . ".png";
-        $this->response(array("imagelink" => $imagepath));
+        $imagepath = base_url() . "assets/userqr/" . $cardid . ".png";
+        return $imagepath;
+    }
+
+    function createUserQrCode_get($cardid) {
+        $this->load->library('phpqr');
+        $filelocation = APPPATH . "../assets/userqr/" . $cardid . ".png";
+        $linkdata = site_url("Api/getUserCard/" . $cardid);
+        $this->phpqr->createcode($linkdata, $filelocation);
+        $imagepath = base_url() . "assets/userqr/" . $cardid . ".png";
+        echo $imagepath;
+    }
+
+    function getCardQr_get($cardid) {
+        $this->load->library('phpqr');
+        $this->db->where('card_id', $cardid);
+        $query = $this->db->get('card');
+        $userdata = $query->row();
+        $linkdata = site_url("Api/getUserCard/" . $userdata->card_id);
+//        header('Content-type: image/jpeg');
+        $this->phpqr->showcode($linkdata);
     }
 
     function createUserCard_get($userid) {
@@ -176,7 +192,6 @@ class Api extends REST_Controller {
             "usercode" => $usercode,
             "datetime" => date("Y-m-d H:i:s a"),
             "profile_image" => $profileimageurl,
-            "cardimage" => "",
         );
         $this->db->where('email', $email);
         $query = $this->db->get('app_user');
@@ -245,19 +260,111 @@ class Api extends REST_Controller {
         $userdata = $query->result_array();
         $usercarddata = [];
         foreach ($userdata as $key => $value) {
-            $this->db->where('usercode', $value['scanner_id']);
-            $query = $this->db->get('app_user');
+            $this->db->where('card_id', $value['scanner_id']);
+            $query = $this->db->get('card');
             $user = $query->row();
-            $user->cardid = $value['id'];
-            $user->cardimage = base_url() . "assets/usercard/".$user->cardimage;
-            array_push($usercarddata, $user);
+            if ($user) {
+                $user->cardid = $value['id'];
+
+//            $user->qrcode = base_url() . "assets/usercard/" . $user->cardimage;
+                array_push($usercarddata, $user);
+            }
         }
         return $this->response($usercarddata);
     }
-    
-    function removeUsersCard_get($cardid){
-         $this->db->where('id', $cardid);
-         $this->db->delete('card_share');
+
+    function removeUsersCard_get($cardid) {
+        $this->db->where('id', $cardid);
+        $this->db->delete('card_share');
+    }
+
+    function getUsersCardAll_get($user_id) {
+        $this->db->where('user_id', $user_id);
+        $query = $this->db->get('card');
+        $usercards = $query->result_array();
+        $cardstype = array("personal" => [], "professsional" => []);
+        foreach ($usercards as $key => $value) {
+            if ($value['card_type'] == 'professionalcard') {
+                array_push($cardstype["professsional"], $value);
+            } else {
+                array_push($cardstype["personal"], $value);
+            }
+        }
+        return $this->response($cardstype);
+    }
+
+    function getDirectoryCardAll_get($user_id) {
+        $this->db->where('visibility', "public");
+        $this->db->where("user_id !=$user_id");
+        $query = $this->db->get('card');
+        $usercards = $query->result_array();
+        $cardstype = array("personal" => [], "professsional" => []);
+        foreach ($usercards as $key => $value) {
+            if ($value['card_type'] == 'professionalcard') {
+                array_push($cardstype["professsional"], $value);
+            } else {
+                array_push($cardstype["personal"], $value);
+            }
+        }
+        return $this->response($cardstype);
+    }
+
+    function createCard_post() {
+        $this->config->load('rest', TRUE);
+        header('Access-Control-Allow-Origin: *');
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+        $usercode = rand(10000000, 99999999);
+        $visibility = $this->post("visibiliey");
+        $visibilitytype = $visibility ? 'public' : 'private';
+        $regArray = array(
+            "name" => $this->post('name'),
+            "email" => $this->post('email'),
+            "contact_no" => $this->post('contact_no'),
+            "company_name" => $this->post('company'),
+            "designation" => $this->post('designation'),
+            "industry" => $this->post('industry'),
+            "address1" => $this->post('address1'),
+            "address2" => $this->post('address2'),
+            "country" => $this->post('country'),
+            "state" => $this->post('state'),
+            "city" => $this->post('city'),
+            "datetime" => date("Y-m-d H:i:s a"),
+            "user_id" => $this->post('user_id'),
+            "card_type" => $this->post("card_type"),
+            "visibility" => $visibilitytype,
+        );
+        $this->db->insert('card', $regArray);
+        $last_id = $this->db->insert_id();
+
+        $cardid = $usercode . "" . $last_id;
+        $imagepath = base_url() . "assets/userqr/" . $cardid . ".png";
+        $this->db->set("card_id", $cardid);
+        $this->db->set("qrcode", "yes");
+        $this->db->where('id', $last_id); //set column_name and value in which row need to update
+        $this->db->update("card");
+        $cardurl = $this->createUserQrCode($cardid);
+        $this->response(array("status" => "200", "userdata" => $regArray));
+    }
+
+    function eventsList_get() {
+        $eventlist = [
+            array(
+                "title" => " 15th Conference of Pediatric Endosurgeons of India (PESICON 2020)",
+                "description" => "It gives us great pleasure to invite you to the 15th Conference of Pediatric Endosurgeons of India (PESICON 2020) to be held from the 28th February - 1st March, 2020 at Hotel Sheraton Grand, Pune, Maharashtra.",
+                "locatioin" => "Hotel Sheraton Grand",
+                "address" => "Raja Bahadur Mill Rd, Sangamvadi, Pune, Maharashtra 411001",
+                "date" => "28th February - 1st March, 2020",
+                "city" => "Pune",
+                "image"=>"https://pesicon2020.com/wp-content/uploads/files/pesicon-logo.jpg",
+                "state" => "Maharashtra",
+                "email" => "pesicon2020@icegroupindia.com",
+                "contact_no" => "020 6641 1111",
+                "organiser" => "Dr. Dasmit Singh Khokar \n(Deptt of Pediatric Surgery)",
+                "organiser_position" => "Organizing Chairman",
+                "website" => "pesicon2020.com",
+            )
+        ];
+        $this->response($eventlist);
     }
 
 }
