@@ -282,15 +282,7 @@ class Api extends REST_Controller {
         $this->db->where('user_id', $user_id);
         $query = $this->db->get('card');
         $usercards = $query->result_array();
-        $cardstype = array("personal" => [], "professsional" => []);
-        foreach ($usercards as $key => $value) {
-            if ($value['card_type'] == 'professionalcard') {
-                array_push($cardstype["professsional"], $value);
-            } else {
-                array_push($cardstype["personal"], $value);
-            }
-        }
-        return $this->response($cardstype);
+        return $this->response($usercards);
     }
 
     function getDirectoryCardAll_get($user_id) {
@@ -298,15 +290,20 @@ class Api extends REST_Controller {
         $this->db->where("user_id !=$user_id");
         $query = $this->db->get('card');
         $usercards = $query->result_array();
-        $cardstype = array("personal" => [], "professsional" => []);
+        $usercardlist = $usercards;
+        $usercardlist = [];
         foreach ($usercards as $key => $value) {
-            if ($value['card_type'] == 'professionalcard') {
-                array_push($cardstype["professsional"], $value);
+            $user_ids = $value['user_id'];
+            $usercheck = $this->Product_model->checkUserConnection($user_id, $user_ids);
+
+            if ($usercheck) {
+                $value['connected'] = 'Yes';
             } else {
-                array_push($cardstype["personal"], $value);
+                $value['connected'] = 'No';
             }
+            array_push($usercardlist, $value);
         }
-        return $this->response($cardstype);
+        return $this->response($usercardlist);
     }
 
     function createCard_post() {
@@ -346,6 +343,12 @@ class Api extends REST_Controller {
         $this->response(array("status" => "200", "userdata" => $regArray));
     }
 
+    function removeCard_post() {
+        $card_id = $this->post('card_id');
+        $this->db->where('card_id', $card_id); //set column_name and value in which row need to update
+        $this->db->delete("card");
+    }
+
     function eventsList_get() {
         $eventlist = [
             array(
@@ -355,7 +358,7 @@ class Api extends REST_Controller {
                 "address" => "Raja Bahadur Mill Rd, Sangamvadi, Pune, Maharashtra 411001",
                 "date" => "28th February - 1st March, 2020",
                 "city" => "Pune",
-                "image"=>"https://pesicon2020.com/wp-content/uploads/files/pesicon-logo.jpg",
+                "image" => "https://pesicon2020.com/wp-content/uploads/files/pesicon-logo.jpg",
                 "state" => "Maharashtra",
                 "email" => "pesicon2020@icegroupindia.com",
                 "contact_no" => "020 6641 1111",
@@ -365,6 +368,88 @@ class Api extends REST_Controller {
             )
         ];
         $this->response($eventlist);
+    }
+
+    function userConnection_post() {
+        $sender = $this->post('sender');
+        $receiver = $this->post('receiver');
+        $regArray = array(
+            "message" => $this->post('message'),
+            "sender" => $this->post('sender'),
+            "receiver" => $this->post('receiver'),
+            "datetime" => date("Y-m-d H:i:s a"),
+            "connection" => "No",
+        );
+        $this->db->where('receiver', $receiver);
+        $this->db->where("sender", $sender);
+        $query = $this->db->get('user_connection');
+        $connectobj = $query->row_array();
+        if ($connectobj) {
+            $this->response(array("message" => "Your request already sent.", "title" => "Already Sent"));
+        } else {
+            $this->db->insert('user_connection', $regArray);
+            $last_id = $this->db->insert_id();
+            $this->response(array("message" => "Your request has been sent.", "title" => "Request Sent"));
+        }
+    }
+
+    function notifications_get($user_id) {
+        $notificationarray = $this->Product_model->getUserNotificaions($user_id);
+        $this->response($notificationarray);
+    }
+
+    function notificaioncount_get($user_id) {
+        $notificationarray = $this->Product_model->getUserNotificaions($user_id);
+        $this->response(array("count" => count($notificationarray)));
+    }
+
+    function activeConnection_post() {
+        $connection_id = $this->post('connection_id');
+        $rtype = $this->post('rtype');
+        if ($rtype == 'accept') {
+            $this->db->set("connection", "Yes");
+            $this->db->where('id', $connection_id); //set column_name and value in which row need to update
+            $this->db->update("user_connection");
+        } else {
+            $this->db->where('id', $connection_id); //set column_name and value in which row need to update
+            $this->db->delete("user_connection");
+        }
+    }
+
+    function userMessage_post() {
+        $sender = $this->post('sender');
+        $receiver = $this->post('receiver');
+        $regArray = array(
+            "message" => $this->post('message'),
+            "sender" => $this->post('sender'),
+            "receiver" => $this->post('receiver'),
+            "datetime" => date("Y-m-d H:i:s a"),
+            "read_status" => "0",
+        );
+
+        $this->db->insert('user_message', $regArray);
+        $last_id = $this->db->insert_id();
+    }
+
+    function userMessage_get($user_s, $user_r) {
+
+        $this->db->set("read_status", "1");
+        $this->db->where('receiver', $user_s);
+        $this->db->where('sender', $user_r);
+        $this->db->update("user_message");
+
+
+        $query = " select
+            message, datetime, read_status, sender, receiver from
+            (select message, datetime, read_status, sender, receiver from user_message where sender = $user_s and receiver = $user_r
+                union
+            select message, datetime, read_status, sender, receiver from user_message where sender = $user_r and receiver = $user_s)
+             as messagedata order by datetime asc   
+                ";
+
+        $query = $this->db->query($query);
+        $messagearray = $query->result_array();
+        $this->response($messagearray);
     }
 
 }

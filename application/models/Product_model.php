@@ -49,7 +49,7 @@ class Product_model extends CI_Model {
             }
             return $category;
         } else {
-             return $category;
+            return $category;
         }
     }
 
@@ -79,7 +79,7 @@ class Product_model extends CI_Model {
         return array('category_string' => $catstring, "category_array" => $catarray);
     }
 
-    function child($id){
+    function child($id) {
         $this->db->where('parent_id', $id);
         $query = $this->db->get('category');
         if ($query->num_rows() > 0) {
@@ -181,9 +181,56 @@ where pa.product_id=$product_id ";
         $container = "";
         foreach ($category as $ckey => $cvalue) {
             $container .= $this->stringCategories($cvalue['id']);
-            $container .=", " . $cvalue['id'];
+            $container .= ", " . $cvalue['id'];
         }
         return $container;
     }
+
+    function getUserDetails($user_id) {
+        $this->db->where('id', $user_id);
+        $query = $this->db->get('app_user');
+        $userarray = $query->row_array();
+        return $userarray;
+    }
+
+    function getUserNotificaions($user_id) {
+        $query = "SELECT id, sender, receiver, message, datetime, tablename from (
+                  SELECT id, sender, receiver, message, datetime, 'user_message' as tablename 
+                  FROM user_message where receiver = $user_id and read_status = 0
+                  UNION
+                  SELECT id, sender, receiver, message, datetime, 'user_connection' as tablename  
+                  FROM user_connection where CONNECTION = 'No' and receiver = $user_id
+                  ) as notification order by datetime desc";
+        $query = $this->db->query($query);
+        $notification = $query->result_array();
+        $notificationarray = [];
+        foreach ($notification as $key => $value) {
+            $sid = $value['sender'];
+            $userdata = $this->getUserDetails($sid);
+            $value['profile_image'] = $userdata['profile_image'];
+            $value['name'] = $userdata['name'];
+            if ($value['tablename'] == 'user_connection') {
+                $value['title'] = 'New Connect Request From ' . $userdata['name'];
+            } else {
+                $value['title'] = 'Message From ' . $userdata['name'];
+            }
+            array_push($notificationarray, $value);
+        }
+        return $notificationarray;
+    }
+    
+    function checkUserConnection($user_s, $user_d){
+         $query = "
+                  SELECT id, sender, receiver, message, datetime FROM user_connection
+                  where (sender = $user_s and receiver = $user_d) and connection = 'Yes'
+                  union
+                  SELECT id, sender, receiver, message, datetime FROM user_connection
+                  where (receiver = $user_s and sender = $user_d) and connection  = 'Yes'
+                  ";
+        $query = $this->db->query($query);
+        $checkconnection = $query->result_array();
+        return $checkconnection;
+    }
+    
 
 }
