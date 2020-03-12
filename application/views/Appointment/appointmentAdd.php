@@ -42,75 +42,138 @@ $this->load->view('layout/topmenu');
         </ol>
         <!-- end breadcrumb -->
         <!-- begin page-header -->
-        <h1 class="page-header">Set An Appointment <small></small></h1>
+        <h1 class="page-header">Set An Event <small></small></h1>
         <!-- end page-header -->
         <!-- begin profile-container -->
         <div class="profile-container">
             <!-- begin profile-section -->
             <div class="profile-section">
-               
+
                 <div class="row">
                     <div class="col-md-7">
                         <!-- begin profile-info -->
                         <div class="profile-info" style="    font-size: 14px;">
                             <!-- begin table -->
                             <div class="table-responsive">
-                                <form action="#" method="post">
-                                <input type="hidden" name="aid" class="form-control" value="<?php echo $last_aid; ?>">
+                                <form action="#" method="post"  enctype="multipart/form-data">
+                                    <input type="hidden" name="aid" class="form-control" value="<?php echo $last_aid; ?>">
 
-                                <table class="table table-profile">
+                                    <table class="table table-profile">
 
-                                    <tbody>
-                                        <tr >
-                                            <td class="field">Country</td>
-                                            <td>
-                                                <input type="text" name="country" class="form-control" placeholder="Country">
-                                            </td>
-                                        </tr>
-                                        <tr >
-                                            <td class="field">City/State</td>
-                                            <td>
-                                                <input type="text" name="city_state" class="form-control" placeholder="City/State" >       
-                                            </td>
-                                        </tr>
-                                        <tr >
-                                            <td class="field">Hotel Name</td>
-                                            <td>
-                                                <input type="text" name="hotel" class="form-control" placeholder="Hotel Name" ng-model="mapdata.hotel">     
-                                            </td>
-                                        </tr>
-                                        <tr >
-                                            <td class="field">Address</td>
-                                            <td>
-                                                <input type="text" name="address" class="form-control" placeholder="Address" ng-model="mapdata.address">
-                                            </td>
-                                        </tr>
+                                        <tbody>
+                                            <tr >
+                                                <td class="field">Title</td>
+                                                <td>
+                                                    <input type="text" name="title" class="form-control" placeholder="Event Name" ng-model="mapdata.title">     
+                                                </td>
+                                            </tr>
+                                            <tr >
+                                                <td class="field">Description</td>
+                                                <td>
+                                                    <input type="text" name="description" class="form-control" placeholder="Description" ng-model="mapdata.description">
+                                                </td>
+                                            </tr>
 
-                                        <tr >
-                                            <td class="field">Contact No.</td>
-                                            <td>
-                                                <input type="text" name="contact_no" class="form-control" placeholder="Contact No.">                                            </td>
-                                        </tr>
+                                            <tr >
+                                                <td class="field">Venue</td>
+                                                <td>
+                                                    <input type="text" name="venue" class="form-control" placeholder="Vanue Name" ng-model="mapdata.hotel">     
+                                                </td>
+                                            </tr>
+                                            <tr >
+                                                <td class="field">Address</td>
+                                                <td>
+                                                    <input type="text" name="address" class="form-control" placeholder="Address" ng-model="mapdata.address">
+                                                </td>
+                                            </tr>
+
+                                            <tr >
+                                                <td class="field">City</td>
+                                                <td>
+                                                    <input type="text" name="city" class="form-control" placeholder="City" >       
+                                                </td>
+                                            </tr>
+
+                                            <tr >
+                                                <td class="field">State</td>
+                                                <td>
+                                                    <input type="text" name="state" class="form-control" placeholder="State" >       
+                                                </td>
+                                            </tr>
+
+                                            <tr >
+                                                <td class="field">Country</td>
+                                                <td>
+                                                    <input type="text" name="country" class="form-control" placeholder="Country">
+                                                </td>
+                                            </tr>
+
+                                            <tr >
+                                                <td class="field">Contact No.</td>
+                                                <td>
+                                                    <input type="text" name="contact_no" class="form-control" placeholder="Contact No.">                                            </td>
+                                            </tr>
 
 
-                                        <tr>
-                                            <td class="field">Select Dates</td>
-                                            <td>
-                                                
+                                            <tr >
+                                                <td class="field">Email</td>
+                                                <td>
+                                                    <input type="text" name="email" class="form-control" placeholder="Email">                                            </td>
+                                            </tr>
+
+                                            <tr >
+                                                <td class="field">Website</td>
+                                                <td>
+                                                    <input type="text" name="website" class="form-control" placeholder="Website">                                            </td>
+                                            </tr>
+
+                                            <tr >
+                                                <td class="field">Event Image</td>
+                                                <td>
+                                                    <div class="form-group">
+                                                        <label for="image1">Upload Primary Image</label>
+                                                        <input type="file" name="picture" required="" />           
+                                                    </div>                                            </tr>
+
+
+                                            <tr>
+                                                <td class="field">Select Dates</td>
+                                                <td>
+
                                                     <div id="advance-daterange" class="btn btn-white">
                                                         <span></span>
                                                         <i class="fa fa-angle-down fa-fw"></i>
                                                     </div> 
                                                     <input type="hidden" id="start_date" name="start_date" value="<?php echo date("Y-m-d"); ?>">
                                                     <input type="hidden" id="end_date" name="end_date" value="<?php echo date("Y-m-d"); ?>">
-                                                    <button type="submit" class="btn btn-warning" name="set_date">Set Dates</button>
-                                               
-                                            </td>
-                                        </tr>
 
-                                    </tbody>
-                                </table>
-                                 </form>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td class="field">Select Time</td>
+                                                <td>
+                                                    <div class="col-md-6" style="padding-left: 0px;">
+                                                        <input type="text" name="from_time" class="form-control" placeholder="Start Time">                                            
+                                                    </div>
+                                                    <div class="col-md-6" style="padding-right: 0px;">
+                                                        <input type="text" name="to_time" class="form-control" placeholder="End Time">                                            
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+
+                                                </td>
+                                                <td>
+                                                    <button type="submit" class="btn btn-warning btn-lg" name="set_date">Set Dates</button>
+
+                                                </td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </form>
                             </div>
                             <!-- end table -->
 
@@ -128,7 +191,7 @@ $this->load->view('layout/topmenu');
                                                 <table style="    width: 500px;" class="table">
                                                     <tr>
                                                         <td colspan="3">
-                                                            <p class="text-danger">Note: You can change appointment time after add the appointment.</p>
+                                                            <p class="text-danger">Note: You can change event dates after add the appointment.</p>
                                                         </td>
                                                     </tr>
 

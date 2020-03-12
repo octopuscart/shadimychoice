@@ -63,12 +63,11 @@ class LocalApi extends REST_Controller {
         $fieldname = $this->post('name');
         $value = $this->post('value');
         $pk_id = $this->post('pk');
-        $tablename = $this->post('appointment_entry');
         if ($this->checklogin) {
             $data = array($fieldname => $value);
             $this->db->set($data);
             $this->db->where("aid", $pk_id);
-            $this->db->update('appointment_entry', $data);
+            $this->db->update('events', $data);
         }
     }
 
@@ -76,12 +75,11 @@ class LocalApi extends REST_Controller {
         $fieldname = $this->post('name');
         $value = $this->post('value');
         $pk_id = $this->post('pk');
-        $tablename = $this->post('appointment_entry');
         if ($this->checklogin) {
             $data = array($fieldname => $value);
             $this->db->set($data);
             $this->db->where("id", $pk_id);
-            $this->db->update('appointment_entry', $data);
+            $this->db->update('events', $data);
         }
     }
 

@@ -2,7 +2,7 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Appointment_model extends CI_Model {
+class Event_model extends CI_Model {
 
     function __construct() {
         // Call the Model constructor
@@ -38,27 +38,18 @@ class Appointment_model extends CI_Model {
         return $appointmentData;
     }
 
-    public function AppointmentDataAll() {
+    public function EventDataAll() {
         $date = date("Y-m-d");
         $this->db->where('date>=', $date);
         $this->db->group_by('days');
         $this->db->order_by('date');
-        $query = $this->db->get('appointment_entry');
+        $query = $this->db->get('events');
         $countryAppointment = $query->result_array();
-
         $appointmentData = array();
-
         foreach ($countryAppointment as $akey => $avalue) {
             $aid = $avalue['days'];
-
-//            $this->db->set('aid', $avalue['id']);
-//            $this->db->where_in('days', $aid);
-//            $this->db->update('appointment_entry');
-
-
             $this->db->where('days', $aid);
-
-            $query = $this->db->get('appointment_entry');
+            $query = $this->db->get('events');
             $timeData = $query->result_array();
             $avalue['dates'] = array();
             foreach ($timeData as $tkey => $tvalue) {
@@ -70,19 +61,17 @@ class Appointment_model extends CI_Model {
             }
             array_push($appointmentData, $avalue);
         }
-
         return $appointmentData;
     }
 
-    function AppointmentData($appId) {
-
+    function EventData($appId) {
         $appointmentSingle = array();
         $this->db->where('aid', $appId);
         $this->db->group_by('date');
-        $query = $this->db->get('appointment_entry');
+        $query = $this->db->get('events');
         $appData = $query->result_array();
-        $appDataAppointment = $appData[0];
-        $appointmentSingle["appointment"] = $appDataAppointment;
+        $appDataEvent = $appData[0];
+        $appointmentSingle["appointment"] = $appDataEvent;
         $appointmentSingle['date_time_list'] = [];
         foreach ($appData as $key => $value) {
             $temp = array(

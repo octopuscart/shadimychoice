@@ -8,6 +8,7 @@ class Api extends REST_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->model('Product_model');
+        $this->load->model('Event_model');
         $this->load->library('session');
         $this->checklogin = $this->session->userdata('logged_in');
         $this->user_id = $this->session->userdata('logged_in')['login_id'];
@@ -350,23 +351,7 @@ class Api extends REST_Controller {
     }
 
     function eventsList_get() {
-        $eventlist = [
-            array(
-                "title" => " 15th Conference of Pediatric Endosurgeons of India (PESICON 2020)",
-                "description" => "It gives us great pleasure to invite you to the 15th Conference of Pediatric Endosurgeons of India (PESICON 2020) to be held from the 28th February - 1st March, 2020 at Hotel Sheraton Grand, Pune, Maharashtra.",
-                "locatioin" => "Hotel Sheraton Grand",
-                "address" => "Raja Bahadur Mill Rd, Sangamvadi, Pune, Maharashtra 411001",
-                "date" => "28th February - 1st March, 2020",
-                "city" => "Pune",
-                "image" => "https://pesicon2020.com/wp-content/uploads/files/pesicon-logo.jpg",
-                "state" => "Maharashtra",
-                "email" => "pesicon2020@icegroupindia.com",
-                "contact_no" => "020 6641 1111",
-                "organiser" => "Dr. Dasmit Singh Khokar \n(Deptt of Pediatric Surgery)",
-                "organiser_position" => "Organizing Chairman",
-                "website" => "pesicon2020.com",
-            )
-        ];
+        $eventlist = $this->Event_model->EventDataAll();
         $this->response($eventlist);
     }
 

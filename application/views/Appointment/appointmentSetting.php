@@ -27,19 +27,19 @@ $this->load->view('layout/topmenu');
 
     <div class="panel panel-inverse" data-sortable-id="ui-widget-2">
         <div class="panel-heading">
-<!--            <div class="btn-group pull-right">
-                <button type="button" class="btn btn-success btn-xs">Action</button>
-                <button type="button" class="btn btn-success btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="#">Action</a></li>
-                    <li><a href="#">Another action</a></li>
-                    <li><a href="#">Something else here</a></li>
-                    <li class="divider"></li>
-                    <li><a href="#">Separated link</a></li>
-                </ul>
-            </div>-->
+            <!--            <div class="btn-group pull-right">
+                            <button type="button" class="btn btn-success btn-xs">Action</button>
+                            <button type="button" class="btn btn-success btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">Action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Something else here</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">Separated link</a></li>
+                            </ul>
+                        </div>-->
             <h4 class="panel-title">Appointment Data</h4>
         </div>
         <div class="panel-body">
@@ -51,10 +51,10 @@ $this->load->view('layout/topmenu');
             <table id="data-table" class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>Country</th>
-                        <th>City/State</th>
+                        <th style="width:300px;">Event</th>
+                        <th>Country/City/State</th>
                         <th>Hotel Name & Address</th>
-                        <th>Days</th>
+                        <th>Contact</th>
 
                         <th style="    width: 300px;">Date/Time</th>
                     </tr>
@@ -66,11 +66,27 @@ $this->load->view('layout/topmenu');
                             ?>
 
                             <tr>
-                                <td><?php echo $value['country']; ?></td>
-                                <td><?php echo ucfirst(strtolower($value['city_state'])); ?></td>
+                                <td>
+                                    <b><?php echo $value['title']; ?></b><br/>
+                                    <?php echo $value['description']; ?><br/>
+                                   <b> <?php
+                                    echo $value["days"];
+                                    ?></b>
+                                    <br/>
+                                    <br/>
+                                    <button class="btn btn-primary btn-xs" ng-click="viewOnModal('<?php echo $value['address']; ?>', '<?php echo $value['venue']; ?>')"><i class='fa fa-map-marker'></i> View On Map</button>
+                                    <a href="<?php echo site_url("Events/editEvent/" . $value['aid']); ?>" class="btn btn-warning btn-xs" ><i class='fa fa-edit'></i> Edit</a>
+                                    <a href="<?php echo site_url("Events/deleteEvent/" . $value['aid']); ?>" class="btn btn-danger btn-xs" ><i class='fa fa-trash'></i> Delete</a>
+
+                                </td>
+                                <td>
+                                    <?php echo ucfirst(strtolower($value['city'])); ?><br/>
+                                    <?php echo ucfirst(strtolower($value['state'])); ?><br/>
+                                    <?php echo ucfirst(strtolower($value['country'])); ?>
+                                </td>
                                 <td> <b>
                                         <i class="fa fa-building-o"></i>
-                                        <span style="line-height: 14px;"> <?php echo $value['hotel']; ?></span>
+                                        <span style="line-height: 14px;"> <?php echo $value['venue']; ?></span>
                                     </b>
                                     <br/>
                                     <small>
@@ -80,19 +96,17 @@ $this->load->view('layout/topmenu');
                                         <span style=" ">
                                             <i class="fa fa-phone"></i>  <?php echo $value['contact_no']; ?>
                                         </span>
-                                        <br/>
-                                        <br/>
-                                        <button class="btn btn-primary btn-xs" ng-click="viewOnModal('<?php echo $value['address']; ?>', '<?php echo $value['hotel']; ?>')"><i class='fa fa-map-marker'></i> View On Map</button>
-                                        <a href="<?php echo site_url("Appointment/editAppointment/".$value['aid']);?>" class="btn btn-warning btn-xs" ><i class='fa fa-edit'></i> Edit</a>
-                                        <a href="<?php echo site_url("Appointment/deleteAppointment/".$value['aid']);?>" class="btn btn-danger btn-xs" ><i class='fa fa-trash'></i> Delete</a>
 
                                     </div>
                                 </td>
-                                <td><?php
-                                    echo $value["days"];
-                                    $date1 = date_create($value['start_date']);
-                                    // echo date_format($date1, "j<\s\u\p>S</\s\u\p>   F");
-                                    ?></td>
+                                <td>
+                                    <?php
+                                    echo $value["email"];
+                                    ?><br/>
+                                    <?php
+                                    echo $value["website"];
+                                    ?>
+                                </td>
 
                                 <td>
                                     <ul class="list-group">

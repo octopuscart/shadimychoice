@@ -4,8 +4,8 @@ $this->load->view('layout/topmenu');
 ?>    
 
 <?php
-$appointmentdate = $appointmentData['date_time_list'];
-$appointment = $appointmentData['appointment'];
+$eventdate = $eventData['date_time_list'];
+$event = $eventData['appointment'];
 ?>
 <!-- ================== BEGIN PAGE LEVEL STYLE ================== -->
 <link href="<?php echo base_url(); ?>assets/plugins/DataTables/css/data-table.css" rel="stylesheet" />
@@ -45,7 +45,7 @@ $appointment = $appointmentData['appointment'];
         </ol>
         <!-- end breadcrumb -->
         <!-- begin page-header -->
-        <h1 class="page-header"><?php echo $appointment['hotel']; ?>, <?php echo $appointment['country']; ?> <br/><small>(<?php echo $appointment['days']; ?>)</small></h1>
+        <h1 class="page-header"><?php echo $event['venue']; ?>, <?php echo $event['country']; ?> <br/><small>(<?php echo $event['days']; ?>)</small></h1>
         <!-- end page-header -->
         <!-- begin profile-container -->
         <div class="profile-container">
@@ -58,40 +58,98 @@ $appointment = $appointmentData['appointment'];
                         <div class="profile-info" style="    font-size: 14px;">
                             <!-- begin table -->
                             <div class="table-responsive">
-                                <table class="table table-profile">
+                                <table class="table table-profile table-bordered">
 
                                     <tbody>
                                         <tr >
+                                            <td class="field">Title</td>
+                                            <td>
+                                                <span id="title" data-type="text" data-pk="<?php echo $event['aid']; ?>" data-name="title" data-value="<?php echo $event['title']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Enter Title" class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#edit_title" > <?php echo $event['title']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
+                                            </td>
+                                        </tr>
+                                        <tr >
+                                            <td class="field">Description</td>
+                                            <td>
+                                                <span id="description" data-type="textarea" data-pk="<?php echo $event['aid']; ?>" data-name="description" data-value="<?php echo $event['description']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Enter Description" class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#edit_description" > <?php echo $event['description']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
+                                            </td>
+                                        </tr>
+
+
+                                        <tr >
                                             <td class="field">Country</td>
                                             <td>
-                                                <span id="country" data-type="text" data-pk="<?php echo $appointment['aid']; ?>" data-name="country" data-value="<?php echo $appointment['country']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Country" class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#edit_country" > <?php echo $appointment['country']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
+                                                <span id="country" data-type="text" data-pk="<?php echo $event['aid']; ?>" data-name="country" data-value="<?php echo $event['country']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Country" class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#edit_country" > <?php echo $event['country']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
                                             </td>
                                         </tr>
                                         <tr >
-                                            <td class="field">City/State</td>
+                                            <td class="field">State</td>
                                             <td>
-                                                <span id="city_state" data-type="text" data-pk="<?php echo $appointment['aid']; ?>" data-name="city_state" data-value="<?php echo $appointment['city_state']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Enter City/State" class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#city_state" > <?php echo $appointment['city_state']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
+                                                <span id="state" data-type="text" data-pk="<?php echo $event['aid']; ?>" data-name="state" data-value="<?php echo $event['state']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Enter State" class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#state" > <?php echo $event['state']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
                                             </td>
                                         </tr>
                                         <tr >
-                                            <td class="field">Hotel Name</td>
+                                            <td class="field">City</td>
                                             <td>
-                                                <span id="hotel" data-type="text" data-pk="<?php echo $appointment['aid']; ?>" data-name="hotel" data-value="<?php echo $appointment['hotel']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Enter Hotel Name" class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#edit_hotel" > <?php echo $appointment['hotel']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
+                                                <span id="city" data-type="text" data-pk="<?php echo $event['aid']; ?>" data-name="city" data-value="<?php echo $event['city']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Enter City" class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#city" > <?php echo $event['city']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
+                                            </td>
+                                        </tr>
+                                        <tr >
+                                            <td class="field">Venue</td>
+                                            <td>
+                                                <span id="hotel" data-type="text" data-pk="<?php echo $event['aid']; ?>" data-name="venue" data-value="<?php echo $event['venue']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Enter Venue Name" class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#venue_hotel" > <?php echo $event['venue']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
                                             </td>
                                         </tr>
                                         <tr >
                                             <td class="field">Address</td>
                                             <td>
-                                                <span id="address" data-type="textarea" data-pk="<?php echo $appointment['aid']; ?>" data-name="address" data-value="<?php echo $appointment['address']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Enter Address" class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#edit_address" > <?php echo $appointment['address']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
+                                                <span id="address" data-type="textarea" data-pk="<?php echo $event['aid']; ?>" data-name="address" data-value="<?php echo $event['address']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Enter Address" class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#edit_address" > <?php echo $event['address']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
                                             </td>
                                         </tr>
 
                                         <tr >
                                             <td class="field">Contact No.</td>
                                             <td>
-                                                <span id="contact_no" data-type="text" data-pk="<?php echo $appointment['aid']; ?>" data-name="contact_no" data-value="<?php echo $appointment['contact_no']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Enter Contact No." class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#edit_contact_no" > <?php echo $appointment['contact_no']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
+                                                <span id="contact_no" data-type="text" data-pk="<?php echo $event['aid']; ?>" data-name="contact_no" data-value="<?php echo $event['contact_no']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Enter Contact No." class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#edit_contact_no" > <?php echo $event['contact_no']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
                                             </td>
                                         </tr>
+
+                                        <tr >
+                                            <td class="field">Email</td>
+                                            <td>
+                                                <span id="email" data-type="text" data-pk="<?php echo $event['aid']; ?>" data-name="email" data-value="<?php echo $event['email']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Enter Email" class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#edit_email" > <?php echo $event['email']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
+                                            </td>
+                                        </tr>
+
+                                        <tr >
+                                            <td class="field">Website</td>
+                                            <td>
+                                                <span id="website" data-type="text" data-pk="<?php echo $event['aid']; ?>" data-name="website" data-value="<?php echo $event['website']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Enter Website" class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#edit_website" > <?php echo $event['website']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
+                                            </td>
+                                        </tr>
+
+
+                                        <tr >
+                                            <td class="field">Event Image</td>
+                                            <td>
+                                                <div class="col-md-4 imagelist">
+                                                    <img src="<?php echo (base_url() . "assets/media/" . $event['image']); ?>" style="height:60px;" />
+                                                </div>
+                                                <div class="col-md-8">
+
+                                                    <form action="#" method="post" enctype="multipart/form-data">
+                                                        <div class="form-group">
+                                                            <input type="file" name="picture" required="" />           
+                                                        </div> 
+                                                        <button type="submit" name="changeimage" class="btn btn-primary">Change Image</button>
+
+                                                    </form>
+                                                </div>
+                                            </td>
+
+                                        </tr>
+
+
+                                        <tr>
 
 
                                         <tr>
@@ -102,8 +160,8 @@ $appointment = $appointmentData['appointment'];
                                                         <span></span>
                                                         <i class="fa fa-angle-down fa-fw"></i>
                                                     </div> 
-                                                    <input type="hidden" id="start_date" name="start_date" value="<?php echo $appointment['start_date']; ?>">
-                                                    <input type="hidden" id="end_date" name="end_date" value="<?php echo $appointment['end_date']; ?>">
+                                                    <input type="hidden" id="start_date" name="start_date" value="<?php echo $event['start_date']; ?>">
+                                                    <input type="hidden" id="end_date" name="end_date" value="<?php echo $event['end_date']; ?>">
                                                     <button type="submit" class="btn btn-warning" name="set_date">Set Dates</button>
                                                 </form>
                                             </td>
@@ -139,7 +197,7 @@ $appointment = $appointmentData['appointment'];
                                                     </tr>
 
                                                     <?php
-                                                    foreach ($appointmentdate as $key => $value) {
+                                                    foreach ($eventdate as $key => $value) {
                                                         ?>
 
                                                         <tr>
@@ -176,7 +234,10 @@ $appointment = $appointmentData['appointment'];
                         <div class="checkbox m-b-5 m-t-0" >
                             <label><input type="checkbox" id="edit_toggle" /> Edit Information</label>
                         </div>
-                        <iframe  frameborder='0' scrolling='no'  marginheight='0' marginwidth='0'  height="400px" width="100%" id='mapifram'  src="https://maps.google.com/?q=<?php echo $appointment['hotel']; ?>+<?php echo $appointment['address']; ?>&output=embed">
+                        <div style="text-align: center">
+                            <img src="<?php echo (base_url() . "assets/media/" . $event['image']); ?>" style="height:200px;" />
+                        </div>
+                        <iframe  frameborder='0' scrolling='no'  marginheight='0' marginwidth='0'  height="400px" width="100%" id='mapifram'  src="https://maps.google.com/?q=<?php echo $event['venue']; ?>+<?php echo $event['address']; ?>&output=embed">
                         </iframe> 
 
                     </div>
@@ -209,8 +270,8 @@ $appointment = $appointmentData['appointment'];
             $("#modal-dialog-map").modal("show")
         }
 
-        var startdate = "<?php echo $appointment['start_date']; ?>";
-        var enddate = "<?php echo $appointment['end_date']; ?>";
+        var startdate = "<?php echo $event['start_date']; ?>";
+        var enddate = "<?php echo $event['end_date']; ?>";
         $('#advance-daterange span').html(moment(startdate).format('DD MMMM YYYY') + ' - ' + moment(enddate).format('DD MMMM YYYY'));
         $('#advance-daterange').daterangepicker({
             format: 'YYYY-MM-DD',

@@ -17,7 +17,6 @@ $product_menu = array(
         "Categories" => site_url("ProductManager/categories"),
         "Product Out Of Stock" => site_url("ProductManager/productReportStockOut"),
         "Product Removed" => site_url("ProductManager/productReportTrash"),
-        
 //        "Items Prices" => site_url("ProductManager/categoryItems"),
 //        "Product Sorting" => site_url("ProductManager/productSorting"),
 //        "Product Colors" => site_url("ProductManager/productColors"),
@@ -58,6 +57,19 @@ array_push($menu_control, $client_menu);
 
 
 
+$schedule_menu = array(
+    "title" => "Event Management",
+    "icon" => "fa fa-calendar",
+    "active" => "",
+    "sub_menu" => array(
+        "Add Event" => site_url("Events/addEvent"),
+        "List Of Events" => site_url("Events/listEvents"),
+        "Schedule Report" => site_url("#"),
+    ),
+);
+array_push($menu_control, $schedule_menu);
+
+
 $blog_menu = array(
     "title" => "Blog Management",
     "icon" => "fa fa-edit",
@@ -79,7 +91,6 @@ $lookbook_menu = array(
     "active" => "",
     "sub_menu" => array(
         "Images" => site_url("Media/images"),
-
 //        "Tags" => site_url("CMS/blogTag"),
     ),
 );
@@ -197,7 +208,7 @@ foreach ($menu_control as $key => $value) {
                 </div>
                 <div class="info textoverflow" >
 
-                    <?php echo $userdata['first_name']; ?>
+<?php echo $userdata['first_name']; ?>
                     <small class="textoverflow" title="<?php echo $userdata['username']; ?>"><?php echo $userdata['username']; ?></small>
                 </div>
             </li>
@@ -218,7 +229,7 @@ foreach ($menu_control as $key => $value) {
 
                 </ul>
             </li>
-            <?php foreach ($menu_control as $mkey => $mvalue) { ?>
+<?php foreach ($menu_control as $mkey => $mvalue) { ?>
 
                 <li class="has-sub <?php echo $mvalue['active']; ?>">
                     <a href="javascript:;">
@@ -227,15 +238,15 @@ foreach ($menu_control as $key => $value) {
                         <span><?php echo $mvalue['title']; ?></span>
                     </a>
                     <ul class="sub-menu">
-                        <?php
-                        $submenu = $mvalue['sub_menu'];
-                        foreach ($submenu as $key => $value) {
-                            ?>
+    <?php
+    $submenu = $mvalue['sub_menu'];
+    foreach ($submenu as $key => $value) {
+        ?>
                             <li><a href="<?php echo $value; ?>"><?php echo $key; ?></a></li>
                         <?php } ?>
                     </ul>
                 </li>
-            <?php } ?>
+<?php } ?>
             <li class="nav-header">Tailor Admin V <?php echo PANELVERSION; ?></li>
             <li class="nav-header">-</li>
         </ul>
