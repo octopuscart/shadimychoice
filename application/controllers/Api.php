@@ -18,6 +18,13 @@ class Api extends REST_Controller {
         $this->load->view('welcome_message');
     }
 
+    function getUserDetails($user_id) {
+        $this->db->where('id', $user_id); //set column_name and value in which row need to update
+        $query = $this->db->get('app_user');
+        $userData = $query->row();
+        return $userData;
+    }
+
     function updateCurd_post() {
         $fieldname = $this->post('name');
         $value = $this->post('value');
@@ -350,11 +357,32 @@ class Api extends REST_Controller {
         $this->db->delete("card");
     }
 
+    //Event Controllers 
     function eventsList_get() {
         $eventlist = $this->Event_model->EventDataAll();
-        $this->response($eventlist);
+        $eventlisttemp = [];
+        $imagepath = base_url() . "assets/media/";
+        foreach ($eventlist as $key => $value) {
+            $value['image'] = $imagepath . $value['image'];
+            array_push($eventlisttemp, $value);
+        }
+        $this->response($eventlisttemp);
     }
 
+    function eventDetails_get($event_id) {
+        $this->db->where("aid", $event_id);
+        $query = $this->db->get('events');
+        $eventDetails = $query->row_array();
+        $imagepath = base_url() . "assets/media/";
+        $eventDetails['image'] = $imagepath . $eventDetails['image'];
+        $eventDetails['map'] = "https://maps.google.com/?q=" . $eventDetails['venue'] . "+" . $eventDetails['address'] . "&output=embed";
+        $this->response($eventDetails);
+    }
+
+    //end of event controller']
+    //
+    //
+    // start of user connection
     function userConnection_post() {
         $sender = $this->post('sender');
         $receiver = $this->post('receiver');
@@ -378,16 +406,6 @@ class Api extends REST_Controller {
         }
     }
 
-    function notifications_get($user_id) {
-        $notificationarray = $this->Product_model->getUserNotificaions($user_id);
-        $this->response($notificationarray);
-    }
-
-    function notificaioncount_get($user_id) {
-        $notificationarray = $this->Product_model->getUserNotificaions($user_id);
-        $this->response(array("count" => count($notificationarray)));
-    }
-
     function activeConnection_post() {
         $connection_id = $this->post('connection_id');
         $rtype = $this->post('rtype');
@@ -401,6 +419,24 @@ class Api extends REST_Controller {
         }
     }
 
+    //end of user connection
+    //
+    //
+    //Notification controller
+    function notifications_get($user_id) {
+        $notificationarray = $this->Product_model->getUserNotificaions($user_id);
+        $this->response($notificationarray);
+    }
+
+    function notificaioncount_get($user_id) {
+        $notificationarray = $this->Product_model->getUserNotificaions($user_id);
+        $this->response(array("count" => count($notificationarray)));
+    }
+
+    //end of notification Controller
+    //
+    //
+    // User message Controller
     function userMessage_post() {
         $sender = $this->post('sender');
         $receiver = $this->post('receiver');
@@ -416,14 +452,41 @@ class Api extends REST_Controller {
         $last_id = $this->db->insert_id();
     }
 
-    function userMessage_get($user_s, $user_r) {
+    function getLastMessage($user_id, $connect_id) {
+        $msquery = "select  message, datetime from 
+(SELECT * FROM user_message where sender = $connect_id and receiver = $user_id 
+UNION
+SELECT * FROM user_message where sender = $user_id and receiver = $connect_id
+ ) as usermessage order by id limit 0, 1";
+        $query = $this->db->query($msquery);
+        $messagearray = $query->row_array();
+        return $messagearray;
+    }
 
+    function getLastMessage_get($user_id) {
+        $msquery = "select user_id from (
+              SELECT receiver as  user_id FROM `user_message` where sender = $user_id 
+              union all
+              SELECT sender as user_id FROM `user_message` where receiver = $user_id
+              ) as messageusers group by user_id";
+        $query = $this->db->query($msquery);
+        $messagearray = $query->result_array();
+        $messageArrayTemp = array();
+        foreach ($messagearray as $key => $value) {
+            $connect_id = $value['user_id'];
+            $messageobj = $this->getLastMessage($user_id, $connect_id);
+            $userdata = $this->getUserDetails($connect_id);
+            $userMessageTemp = array("message"=>$messageobj, "user"=>$userdata);
+            array_push($messageArrayTemp, $userMessageTemp);
+        }
+        $this->response($messageArrayTemp);
+    }
+
+    function userMessage_get($user_s, $user_r) {
         $this->db->set("read_status", "1");
         $this->db->where('receiver', $user_s);
         $this->db->where('sender', $user_r);
         $this->db->update("user_message");
-
-
         $query = " select
             message, datetime, read_status, sender, receiver from
             (select message, datetime, read_status, sender, receiver from user_message where sender = $user_s and receiver = $user_r
@@ -437,6 +500,7 @@ class Api extends REST_Controller {
         $this->response($messagearray);
     }
 
+    //end of user message controller
 }
 
 ?>
