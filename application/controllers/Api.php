@@ -223,7 +223,7 @@ class Api extends REST_Controller {
         $query = $this->db->get('app_user');
         $userdata = $query->row();
         if ($userdata) {
-            unsset($regArray['password']);
+            unset($regArray['password']);
             $this->db->set($regArray);
             $this->db->where('email', $email); //set column_name and value in which row need to update
             $this->db->update("app_user");
