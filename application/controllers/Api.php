@@ -180,6 +180,24 @@ class Api extends REST_Controller {
 
         $this->response(array("imagelink" => $imagepath));
     }
+    
+    function getUserDataByPassword_post(){
+        $this->config->load('rest', TRUE);
+        header('Access-Control-Allow-Origin: *');
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+        $password = $this->post('password');
+        $email = $this->post('email');
+        $this->db->where('password', $password);
+        $this->db->where('email', $email);
+        $query = $this->db->get('app_user');
+        $userdata = $query->row();
+        if($userdata){
+              $this->response(array("status" => "200", "userdata" => $userdata));
+        }
+        else{
+              $this->response(array("status" => "100"));
+        }
+    }
 
     function registration_post() {
         $this->config->load('rest', TRUE);
