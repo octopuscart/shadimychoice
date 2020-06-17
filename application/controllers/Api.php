@@ -180,8 +180,8 @@ class Api extends REST_Controller {
 
         $this->response(array("imagelink" => $imagepath));
     }
-    
-    function getUserDataByPassword_post(){
+
+    function getUserDataByPassword_post() {
         $this->config->load('rest', TRUE);
         header('Access-Control-Allow-Origin: *');
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
@@ -191,11 +191,10 @@ class Api extends REST_Controller {
         $this->db->where('email', $email);
         $query = $this->db->get('app_user');
         $userdata = $query->row();
-        if($userdata){
-              $this->response(array("status" => "200", "userdata" => $userdata));
-        }
-        else{
-              $this->response(array("status" => "100"));
+        if ($userdata) {
+            $this->response(array("status" => "200", "userdata" => $userdata));
+        } else {
+            $this->response(array("status" => "100"));
         }
     }
 
@@ -495,7 +494,7 @@ SELECT * FROM user_message where sender = $user_id and receiver = $connect_id
             $connect_id = $value['user_id'];
             $messageobj = $this->getLastMessage($user_id, $connect_id);
             $userdata = $this->getUserDetails($connect_id);
-            $userMessageTemp = array("message"=>$messageobj, "user"=>$userdata);
+            $userMessageTemp = array("message" => $messageobj, "user" => $userdata);
             array_push($messageArrayTemp, $userMessageTemp);
         }
         $this->response($messageArrayTemp);
@@ -517,6 +516,18 @@ SELECT * FROM user_message where sender = $user_id and receiver = $connect_id
         $query = $this->db->query($query);
         $messagearray = $query->result_array();
         $this->response($messagearray);
+    }
+
+    function postEventWall_post() {
+        $this->config->load('rest', TRUE);
+        header('Access-Control-Allow-Origin: *');
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+      
+        $visibilitytype = $visibility ? 'public' : 'private';
+        $regArray = array(
+            "name" => $this->post('name'),
+            "email" => $this->post('email'),
+        );
     }
 
     //end of user message controller

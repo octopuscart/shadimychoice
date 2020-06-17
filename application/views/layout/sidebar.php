@@ -31,7 +31,7 @@ if (DEFAULT_PAYMENT == 'No') {
     
 }
 
-array_push($menu_control, $product_menu);
+//array_push($menu_control, $product_menu);
 
 
 $order_menu = array(
@@ -43,7 +43,7 @@ $order_menu = array(
         "Order Analytics" => site_url("Order/index"),
     ),
 );
-array_push($menu_control, $order_menu);
+//array_push($menu_control, $order_menu);
 
 $client_menu = array(
     "title" => "Client Manegement",
