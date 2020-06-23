@@ -45,7 +45,7 @@ $event = $eventData['appointment'];
         </ol>
         <!-- end breadcrumb -->
         <!-- begin page-header -->
-        <h1 class="page-header"><?php echo $event['venue']; ?>, <?php echo $event['country']; ?> <br/><small>(<?php echo $event['days']; ?>)</small></h1>
+        <h1 class="page-header"><?php echo $event['title']; ?>, <?php echo $event['country']; ?> <br/><small>(<?php echo $event['days']; ?>)</small></h1>
         <!-- end page-header -->
         <!-- begin profile-container -->
         <div class="profile-container">
@@ -234,7 +234,7 @@ $event = $eventData['appointment'];
                         <div class="checkbox m-b-5 m-t-0" >
                             <label><input type="checkbox" id="edit_toggle" /> Edit Information</label>
                         </div>
-                        <div style="text-align: center">
+                        <div style="text-align: center;padding:20px;">
                             <img src="<?php echo (base_url() . "assets/media/" . $event['image']); ?>" style="height:200px;" />
                         </div>
                         <iframe  frameborder='0' scrolling='no'  marginheight='0' marginwidth='0'  height="400px" width="100%" id='mapifram'  src="https://maps.google.com/?q=<?php echo $event['venue']; ?>+<?php echo $event['address']; ?>&output=embed">
