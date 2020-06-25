@@ -146,7 +146,7 @@ function userReportFunction($users) {
                 <h3 class="panel-title">
                     Users Reports
                     <span class="pull-right label label-success">
-                        <a class="btn btn-success btn-xs" href="<?php echo site_url('userManager/user_profile_record_xls/all'); ?>"  targer="_blank">
+                        <a class="btn btn-success btn-xs" href="<?php echo site_url('userManager/user_profile_record_xls'); ?>"  targer="_blank">
                             <i class="fa fa-file-excel-o"></i>  Export Data
                         </a>
                     </span>
@@ -165,7 +165,7 @@ function userReportFunction($users) {
 
 
                     <div class="" style="padding:20px">
-                        <?php userReportFunction($users_all); ?>
+                        <?php userReportFunction($users_manager); ?>
                     </div>
                 </div>
 

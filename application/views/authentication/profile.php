@@ -78,7 +78,7 @@ $this->load->view('layout/topmenu');
 
                                         <div class="media">
                                             <a class="media-left" href="javascript:;">
-                                                <img src='<?php echo base_url(); ?>assets/profile_image/<?php echo $userdata->image; ?>' alt="" class="media-object rounded-corner" style="    width: 45px;background: url(<?php echo base_url(); ?>assets/emoji/user.png);    height: 45px;background-size: cover;">
+                                                <img src='<?php echo base_url(); ?>assets/profile_image/<?php echo $userdata->image; ?>' alt="Profile Image" class="media-object rounded-corner" style="    width: 45px;background: url(<?php echo base_url(); ?>assets/emoji/user.png);    height: 45px;background-size: cover;">
                                             </a>
                                             <div class="media-body">
                                                 <h4 class="media-heading"><?php echo $userdata->first_name; ?> <?php echo $userdata->last_name; ?></h4>

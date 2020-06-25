@@ -7,22 +7,6 @@ if ($userdata) {
 }
 $menu_control = array();
 
-$product_menu = array(
-    "title" => "Product Manegement",
-    "icon" => "ion-cube",
-    "active" => "",
-    "sub_menu" => array(
-        "Add Product" => site_url("ProductManager/add_product"),
-        "Product Reports" => site_url("ProductManager/productReport"),
-        "Categories" => site_url("ProductManager/categories"),
-        "Product Out Of Stock" => site_url("ProductManager/productReportStockOut"),
-        "Product Removed" => site_url("ProductManager/productReportTrash"),
-//        "Items Prices" => site_url("ProductManager/categoryItems"),
-//        "Product Sorting" => site_url("ProductManager/productSorting"),
-//        "Product Colors" => site_url("ProductManager/productColors"),
-    ),
-);
-
 
 
 if (DEFAULT_PAYMENT == 'No') {
@@ -31,19 +15,8 @@ if (DEFAULT_PAYMENT == 'No') {
     
 }
 
-//array_push($menu_control, $product_menu);
 
 
-$order_menu = array(
-    "title" => "Order Manegement",
-    "icon" => "fa fa-list",
-    "active" => "",
-    "sub_menu" => array(
-        "Orders Reports" => site_url("Order/orderslist"),
-        "Order Analytics" => site_url("Order/index"),
-    ),
-);
-//array_push($menu_control, $order_menu);
 
 $client_menu = array(
     "title" => "Client Manegement",
@@ -70,18 +43,7 @@ $schedule_menu = array(
 array_push($menu_control, $schedule_menu);
 
 
-$blog_menu = array(
-    "title" => "Blog Management",
-    "icon" => "fa fa-edit",
-    "active" => "",
-    "sub_menu" => array(
-        "Categories" => site_url("CMS/blogCategories"),
-        "Add New" => site_url("CMS/newBlog"),
-        "Blog List" => site_url("CMS/blogList"),
-        "Tags" => site_url("CMS/blogTag"),
-    ),
-);
-//array_push($menu_control, $blog_menu);
+
 
 
 
@@ -94,8 +56,10 @@ $lookbook_menu = array(
 //        "Tags" => site_url("CMS/blogTag"),
     ),
 );
-array_push($menu_control, $lookbook_menu);
 
+if ($userdata['user_type'] == 'Admin') {
+    array_push($menu_control, $lookbook_menu);
+}
 //
 //$cms_menu = array(
 //    "title" => "Content Management",
@@ -114,8 +78,8 @@ $msg_menu2 = array(
     "icon" => "fa fa-envelope",
     "active" => "",
     "sub_menu" => array(
-        "Send Mail/Newsletter (Prm.)" => site_url("#"),
-        "Send Mail/Newsletter (Txn.)" => site_url("#"),
+        "Send Mail To Clinet" => site_url("#"),
+        "Email Configuration" => site_url("#"),
     ),
 );
 
@@ -129,7 +93,7 @@ $msg_menu = array(
 );
 
 
-//array_push($menu_control, $msg_menu);
+array_push($menu_control, $msg_menu2);
 
 
 
@@ -138,13 +102,15 @@ $user_menu = array(
     "icon" => "fa fa-user",
     "active" => "",
     "sub_menu" => array(
-        "Add User" => site_url("#"),
-        "Users Reports" => site_url("#"),
+        "Add User" => site_url("UserManager/addManager"),
+        "Users Reports" => site_url("UserManager/usersReportManager"),
     ),
 );
+if ($userdata['user_type'] == 'Admin') {
+    array_push($menu_control, $user_menu);
+}
 
 
-//array_push($menu_control, $user_menu);
 
 $setting_menu = array(
     "title" => "Settings",
@@ -163,7 +129,7 @@ array_push($menu_control, $setting_menu);
 
 $social_menu = array(
     "title" => "Social Management",
-    "icon" => "fa fa-calendar",
+    "icon" => "fa fa-facebook",
     "active" => "",
     "sub_menu" => array(
         "Social Link" => site_url("CMS/socialLink"),
@@ -181,9 +147,9 @@ $seo_menu = array(
         "Page Wise Setting" => site_url("CMS/seoPageSetting"),
     ),
 );
-array_push($menu_control, $seo_menu);
-
-
+if ($userdata['user_type'] == 'Admin') {
+    array_push($menu_control, $seo_menu);
+}
 
 foreach ($menu_control as $key => $value) {
     $submenu = $value['sub_menu'];
@@ -208,7 +174,7 @@ foreach ($menu_control as $key => $value) {
                 </div>
                 <div class="info textoverflow" >
 
-<?php echo $userdata['first_name']; ?>
+                    <?php echo $userdata['first_name']; ?>
                     <small class="textoverflow" title="<?php echo $userdata['username']; ?>"><?php echo $userdata['username']; ?></small>
                 </div>
             </li>
@@ -225,11 +191,11 @@ foreach ($menu_control as $key => $value) {
                 </a>
                 <ul class="sub-menu">
 
-                    <li class="active"><a href="<?php echo site_url("Order/index"); ?>">Dashboard</a></li>
+                    <li class="active "><a href="<?php echo site_url("Order/index"); ?>">Dashboard</a></li>
 
                 </ul>
             </li>
-<?php foreach ($menu_control as $mkey => $mvalue) { ?>
+            <?php foreach ($menu_control as $mkey => $mvalue) { ?>
 
                 <li class="has-sub <?php echo $mvalue['active']; ?>">
                     <a href="javascript:;">
@@ -238,15 +204,15 @@ foreach ($menu_control as $key => $value) {
                         <span><?php echo $mvalue['title']; ?></span>
                     </a>
                     <ul class="sub-menu">
-    <?php
-    $submenu = $mvalue['sub_menu'];
-    foreach ($submenu as $key => $value) {
-        ?>
+                        <?php
+                        $submenu = $mvalue['sub_menu'];
+                        foreach ($submenu as $key => $value) {
+                            ?>
                             <li><a href="<?php echo $value; ?>"><?php echo $key; ?></a></li>
                         <?php } ?>
                     </ul>
                 </li>
-<?php } ?>
+            <?php } ?>
             <li class="nav-header">Tailor Admin V <?php echo PANELVERSION; ?></li>
             <li class="nav-header">-</li>
         </ul>

@@ -38,11 +38,14 @@ class Event_model extends CI_Model {
         return $appointmentData;
     }
 
-    public function EventDataAll() {
+    public function EventDataAll($user_id = 0) {
         $date = date("Y-m-d");
         $this->db->where('date>=', $date);
+        if ($user_id) {
+            $this->db->where('user_id', $user_id);
+        }
         $this->db->group_by('days');
-        $this->db->order_by('date');
+        $this->db->order_by('date desc');
         $query = $this->db->get('events');
         $countryAppointment = $query->result_array();
         $appointmentData = array();
@@ -51,6 +54,12 @@ class Event_model extends CI_Model {
             $this->db->where('days', $aid);
             $query = $this->db->get('events');
             $timeData = $query->result_array();
+
+            $this->db->where('id', $avalue['user_id']);
+            $query = $this->db->get('admin_users');
+            $userData = $query->row_array();
+            $avalue['manager'] = $userData;
+
             $avalue['dates'] = array();
             foreach ($timeData as $tkey => $tvalue) {
                 $temparray = array();
@@ -82,8 +91,7 @@ class Event_model extends CI_Model {
             );
             array_push($appointmentSingle['date_time_list'], $temp);
         }
-       return $appointmentSingle;
-  
+        return $appointmentSingle;
     }
 
 }

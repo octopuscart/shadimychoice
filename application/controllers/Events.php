@@ -17,7 +17,7 @@ class Events extends CI_Controller {
     }
 
     public function listEvents() {
-        $allappointment = $this->Event_model->EventDataAll();
+        $allappointment = $this->Event_model->EventDataAll($this->userdata['user_type'] == 'Manager'?$this->userdata['login_id']:0);
         $data['appointmentdata'] = $allappointment;
         $this->load->view('Appointment/appointmentSetting', $data);
     }
@@ -126,7 +126,6 @@ class Events extends CI_Controller {
                 if ($this->upload->do_upload('picture')) {
                     $uploadData = $this->upload->data();
                     $picture = $uploadData['file_name'];
-
                 } else {
                     $picture = '';
                 }
@@ -166,6 +165,7 @@ class Events extends CI_Controller {
                     "from_time" => $this->input->post('from_time'),
                     "to_time" => $this->input->post('to_time'),
                     "image" => $file_newname,
+                    "user_id" =>  $this->userdata['login_id']
                 );
                 $this->db->insert('events', $tempData);
             }

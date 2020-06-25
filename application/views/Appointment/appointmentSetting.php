@@ -52,8 +52,8 @@ $this->load->view('layout/topmenu');
                 <thead>
                     <tr>
                         <th style="width:300px;">Event</th>
-                        <th>Country/City/State</th>
-                        <th>Hotel Name & Address</th>
+                       
+                        <th>Venue & Address</th>
                         <th>Contact</th>
 
                         <th style="    width: 300px;">Date/Time</th>
@@ -69,21 +69,12 @@ $this->load->view('layout/topmenu');
                                 <td>
                                     <b><?php echo $value['title']; ?></b><br/>
                                     <?php echo $value['description']; ?><br/>
-                                   <b> <?php
-                                    echo $value["days"];
-                                    ?></b>
+                                    
+                                   <br/>
                                     <br/>
-                                    <br/>
-                                    <button class="btn btn-primary btn-xs" ng-click="viewOnModal('<?php echo $value['address']; ?>', '<?php echo $value['venue']; ?>')"><i class='fa fa-map-marker'></i> View On Map</button>
-                                    <a href="<?php echo site_url("Events/editEvent/" . $value['aid']); ?>" class="btn btn-warning btn-xs" ><i class='fa fa-edit'></i> Edit</a>
-                                    <a href="<?php echo site_url("Events/deleteEvent/" . $value['aid']); ?>" class="btn btn-danger btn-xs" ><i class='fa fa-trash'></i> Delete</a>
+                                    <b>Organizer</b>: <?php echo $value['manager']['email'] ?>
+                                </td>
 
-                                </td>
-                                <td>
-                                    <?php echo ucfirst(strtolower($value['city'])); ?><br/>
-                                    <?php echo ucfirst(strtolower($value['state'])); ?><br/>
-                                    <?php echo ucfirst(strtolower($value['country'])); ?>
-                                </td>
                                 <td> <b>
                                         <i class="fa fa-building-o"></i>
                                         <span style="line-height: 14px;"> <?php echo $value['venue']; ?></span>
@@ -98,6 +89,10 @@ $this->load->view('layout/topmenu');
                                         </span>
 
                                     </div>
+                                    <br/>
+                                    <?php echo ucfirst(strtolower($value['city'])); ?>, 
+                                    <?php echo ucfirst(strtolower($value['state'])); ?><br/>
+                                    <?php echo ucfirst(strtolower($value['country'])); ?>
                                 </td>
                                 <td>
                                     <?php
@@ -110,18 +105,16 @@ $this->load->view('layout/topmenu');
 
                                 <td>
                                     <ul class="list-group">
-                                        <?php
-                                        $dataes = $value['dates'];
-                                        foreach ($dataes as $dtkey1 => $dtvalue1) {
-                                            echo "<li  class='list-group-item'>";
-
-
-                                            echo '<span class = "timeing_open" style="    width: 100px;">' . date_format(date_create($dtvalue1['date']), "d F Y") . "</span>: " . $dtvalue1['timing1'] . " to " . $dtvalue1['timing2'] . "<br/>";
-
-                                            echo "</li>";
-                                        }
-                                        ?>
+                                        <b> <?php
+                                        echo $value["days"];
+                                        ?></b>
                                     </ul>
+                                      <br/>
+                                    <br/>
+                                    <button class="btn btn-primary btn-xs" ng-click="viewOnModal('<?php echo $value['address']; ?>', '<?php echo $value['venue']; ?>')"><i class='fa fa-map-marker'></i> View On Map</button>
+                                    <a href="<?php echo site_url("Events/editEvent/" . $value['aid']); ?>" class="btn btn-warning btn-xs" ><i class='fa fa-edit'></i> Edit</a>
+                                    <a href="<?php echo site_url("Events/deleteEvent/" . $value['aid']); ?>" class="btn btn-danger btn-xs" ><i class='fa fa-trash'></i> Delete</a>
+                                   
                                 </td>
                             </tr>
 
