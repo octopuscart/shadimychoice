@@ -75,14 +75,18 @@ class Event_model extends CI_Model {
 
     function EventData($appId) {
         $appointmentSingle = array();
-        $this->db->where('aid', $appId);
-        $this->db->group_by('date');
+        $this->db->where('id', $appId);
         $query = $this->db->get('events');
         $appData = $query->result_array();
+        
+        $this->db->where('event_id', $appId);
+        $query = $this->db->get('events_dates');
+        $eventdatelist = $query->result_array();
+        
         $appDataEvent = $appData[0];
         $appointmentSingle["appointment"] = $appDataEvent;
         $appointmentSingle['date_time_list'] = [];
-        foreach ($appData as $key => $value) {
+        foreach ($eventdatelist as $key => $value) {
             $temp = array(
                 'from_time' => $value['from_time'],
                 'to_time' => $value['to_time'],

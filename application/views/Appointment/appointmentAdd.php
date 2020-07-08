@@ -61,6 +61,28 @@ $this->load->view('layout/topmenu');
                                     <table class="table table-profile">
 
                                         <tbody>
+                                            <tr>
+                                                <td>Category</td>
+                                                <td>
+                                                    <div class="row">
+                                                        <div class="col-md-8">
+                                                            <select name="category_id" class="form-control">
+                                                                <?php
+                                                                foreach ($category_list as $key => $value) {
+                                                                    ?>
+                                                                    <option value="<?php echo $value['id']; ?>"><?php echo $value['category_name']; ?></option>
+                                                                    <?php
+                                                                }
+                                                                ?>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <a href="<?php echo site_url("Events/eventCategories")?>" class="btn btn-sm btn-link">Add Category</a>
+                                                        </div>
+                                                        
+                                                </td>
+                                            </tr>
+
                                             <tr >
                                                 <td class="field">Title</td>
                                                 <td>
@@ -154,10 +176,10 @@ $this->load->view('layout/topmenu');
                                                 <td class="field">Select Time</td>
                                                 <td>
                                                     <div class="col-md-6" style="padding-left: 0px;">
-                                                        <input type="text" name="from_time" class="form-control" placeholder="Start Time">                                            
+                                                        <input type="time" name="from_time" class="form-control" placeholder="Start Time">                                            
                                                     </div>
                                                     <div class="col-md-6" style="padding-right: 0px;">
-                                                        <input type="text" name="to_time" class="form-control" placeholder="End Time">                                            
+                                                        <input type="time" name="to_time" class="form-control" placeholder="End Time">                                            
                                                     </div>
                                                 </td>
                                             </tr>

@@ -117,6 +117,7 @@ $setting_menu = array(
     "icon" => "fa fa-cogs",
     "active" => "",
     "sub_menu" => array(
+        "Event Categories"=>site_url("Events/eventCategories"),
         "System Log" => site_url("Services/systemLogReport"),
         "Report Configuration" => site_url("Configuration/reportConfiguration"),
     ),

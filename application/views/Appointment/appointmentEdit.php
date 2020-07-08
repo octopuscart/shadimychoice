@@ -64,13 +64,13 @@ $event = $eventData['appointment'];
                                         <tr >
                                             <td class="field">Title</td>
                                             <td>
-                                                <span id="title" data-type="text" data-pk="<?php echo $event['aid']; ?>" data-name="title" data-value="<?php echo $event['title']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Enter Title" class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#edit_title" > <?php echo $event['title']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
+                                                <span id="title" data-type="text" data-pk="<?php echo $event['id']; ?>" data-name="title" data-value="<?php echo $event['title']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Enter Title" class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#edit_title" > <?php echo $event['title']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
                                             </td>
                                         </tr>
                                         <tr >
                                             <td class="field">Description</td>
                                             <td>
-                                                <span id="description" data-type="textarea" data-pk="<?php echo $event['aid']; ?>" data-name="description" data-value="<?php echo $event['description']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Enter Description" class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#edit_description" > <?php echo $event['description']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
+                                                <span id="description" data-type="textarea" data-pk="<?php echo $event['id']; ?>" data-name="description" data-value="<?php echo $event['description']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Enter Description" class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#edit_description" > <?php echo $event['description']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
                                             </td>
                                         </tr>
 
@@ -78,52 +78,52 @@ $event = $eventData['appointment'];
                                         <tr >
                                             <td class="field">Country</td>
                                             <td>
-                                                <span id="country" data-type="text" data-pk="<?php echo $event['aid']; ?>" data-name="country" data-value="<?php echo $event['country']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Country" class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#edit_country" > <?php echo $event['country']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
+                                                <span id="country" data-type="text" data-pk="<?php echo $event['id']; ?>" data-name="country" data-value="<?php echo $event['country']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Country" class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#edit_country" > <?php echo $event['country']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
                                             </td>
                                         </tr>
                                         <tr >
                                             <td class="field">State</td>
                                             <td>
-                                                <span id="state" data-type="text" data-pk="<?php echo $event['aid']; ?>" data-name="state" data-value="<?php echo $event['state']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Enter State" class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#state" > <?php echo $event['state']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
+                                                <span id="state" data-type="text" data-pk="<?php echo $event['id']; ?>" data-name="state" data-value="<?php echo $event['state']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Enter State" class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#state" > <?php echo $event['state']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
                                             </td>
                                         </tr>
                                         <tr >
                                             <td class="field">City</td>
                                             <td>
-                                                <span id="city" data-type="text" data-pk="<?php echo $event['aid']; ?>" data-name="city" data-value="<?php echo $event['city']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Enter City" class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#city" > <?php echo $event['city']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
+                                                <span id="city" data-type="text" data-pk="<?php echo $event['id']; ?>" data-name="city" data-value="<?php echo $event['city']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Enter City" class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#city" > <?php echo $event['city']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
                                             </td>
                                         </tr>
                                         <tr >
                                             <td class="field">Venue</td>
                                             <td>
-                                                <span id="hotel" data-type="text" data-pk="<?php echo $event['aid']; ?>" data-name="venue" data-value="<?php echo $event['venue']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Enter Venue Name" class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#venue_hotel" > <?php echo $event['venue']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
+                                                <span id="hotel" data-type="text" data-pk="<?php echo $event['id']; ?>" data-name="venue" data-value="<?php echo $event['venue']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Enter Venue Name" class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#venue_hotel" > <?php echo $event['venue']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
                                             </td>
                                         </tr>
                                         <tr >
                                             <td class="field">Address</td>
                                             <td>
-                                                <span id="address" data-type="textarea" data-pk="<?php echo $event['aid']; ?>" data-name="address" data-value="<?php echo $event['address']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Enter Address" class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#edit_address" > <?php echo $event['address']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
+                                                <span id="address" data-type="textarea" data-pk="<?php echo $event['id']; ?>" data-name="address" data-value="<?php echo $event['address']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Enter Address" class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#edit_address" > <?php echo $event['address']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
                                             </td>
                                         </tr>
 
                                         <tr >
                                             <td class="field">Contact No.</td>
                                             <td>
-                                                <span id="contact_no" data-type="text" data-pk="<?php echo $event['aid']; ?>" data-name="contact_no" data-value="<?php echo $event['contact_no']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Enter Contact No." class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#edit_contact_no" > <?php echo $event['contact_no']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
+                                                <span id="contact_no" data-type="text" data-pk="<?php echo $event['id']; ?>" data-name="contact_no" data-value="<?php echo $event['contact_no']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Enter Contact No." class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#edit_contact_no" > <?php echo $event['contact_no']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
                                             </td>
                                         </tr>
 
                                         <tr >
                                             <td class="field">Email</td>
                                             <td>
-                                                <span id="email" data-type="text" data-pk="<?php echo $event['aid']; ?>" data-name="email" data-value="<?php echo $event['email']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Enter Email" class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#edit_email" > <?php echo $event['email']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
+                                                <span id="email" data-type="text" data-pk="<?php echo $event['id']; ?>" data-name="email" data-value="<?php echo $event['email']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Enter Email" class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#edit_email" > <?php echo $event['email']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
                                             </td>
                                         </tr>
 
                                         <tr >
                                             <td class="field">Website</td>
                                             <td>
-                                                <span id="website" data-type="text" data-pk="<?php echo $event['aid']; ?>" data-name="website" data-value="<?php echo $event['website']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Enter Website" class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#edit_website" > <?php echo $event['website']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
+                                                <span id="website" data-type="text" data-pk="<?php echo $event['id']; ?>" data-name="website" data-value="<?php echo $event['website']; ?>" data-url="<?php echo site_url("LocalApi/updateAppointment"); ?>" data-original-title="Enter Website" class="m-l-5 editable editable-click" tabindex="-1" data-toggle="#edit_website" > <?php echo $event['website']; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
                                             </td>
                                         </tr>
 

@@ -66,7 +66,7 @@ class LocalApi extends REST_Controller {
         if ($this->checklogin) {
             $data = array($fieldname => $value);
             $this->db->set($data);
-            $this->db->where("aid", $pk_id);
+            $this->db->where("id", $pk_id);
             $this->db->update('events', $data);
         }
     }
@@ -79,7 +79,7 @@ class LocalApi extends REST_Controller {
             $data = array($fieldname => $value);
             $this->db->set($data);
             $this->db->where("id", $pk_id);
-            $this->db->update('events', $data);
+            $this->db->update('events_dates', $data);
         }
     }
 
