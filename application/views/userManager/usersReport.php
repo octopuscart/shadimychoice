@@ -123,7 +123,7 @@ function userReportFunction($users) {
                         </td>
 
                         <td>
-                            <a href="<?php echo site_url('userManager/user_details/' . $value->id); ?>" class="btn btn-danger"><i class="fa fa-eye "></i> View</a>
+                            <a href="<?php echo site_url('userManager/profile/' . $value->id); ?>" class="btn btn-danger"><i class="fa fa-eye "></i> View</a>
                         </td>
                     </tr>
                     <?php

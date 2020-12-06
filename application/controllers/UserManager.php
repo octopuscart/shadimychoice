@@ -132,18 +132,17 @@ class UserManager extends CI_Controller {
         $this->load->view('userManager/addManager', $data);
     }
 
-    public function profile() {
+    public function profile($userid) {
         $data = array();
         // echo password_hash('rasmuslerdorf', PASSWORD_DEFAULT)."\n";
-        $userid = $this->userdata['login_id'];
+     
         $query = $this->db->get_where("admin_users", array("id" => $userid));
         $userdata = $query->row();
         $data['userdata'] = $userdata;
 
 
-        $query = $this->db->get("country");
-        $countrydata = $query->result_array();
-        $data['country'] = $countrydata;
+  
+        $data['country'] = array();
 
         $config['upload_path'] = 'assets/profile_image';
         $config['allowed_types'] = '*';
@@ -172,8 +171,7 @@ class UserManager extends CI_Controller {
             $this->db->where('id', $userid); //set column_name and value in which row need to update
             $this->db->update('admin_users');
             $this->userdata['image'] = $picture;
-            $this->session->set_userdata('logged_in', $this->userdata);
-            redirect("Authentication/profile");
+            redirect("userManager/profile/".$userid);
         }
 
         if (isset($_POST['changePassword'])) {
@@ -206,7 +204,7 @@ class UserManager extends CI_Controller {
                     $this->db->where("id", $userid);
                     $this->db->update("admin_users");
 
-                    redirect("profile");
+                    redirect("userManager/profile/".$userid);
                 } else {
                     $message = array(
                         'title' => 'Password Error.',

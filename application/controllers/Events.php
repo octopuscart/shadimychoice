@@ -103,18 +103,12 @@ class Events extends CI_Controller {
     }
 
     public function addEvent() {
-        $this->db->order_by('id desc');
-        $query = $this->db->get('events');
-        $last_id = $query->row();
-        $data = array("last_aid" => $last_id ? ($last_id->id + 1) : 1);
+     
+        $data = array("last_aid" =>1);
 
-        $categories_data = $this->Curd_model->get('category');
-        $categories_data_acc = array();
-        foreach ($categories_data as $kcdey => $cdvalue) {
-            $categories_data_acc[$cdvalue['id']] = $cdvalue;
-        }
+        
 
-        $data['category_list'] = $categories_data_acc;
+        $data['category_list'] = array();
 
         if (isset($_POST['set_date'])) {
 
