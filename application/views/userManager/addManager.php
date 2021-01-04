@@ -21,7 +21,7 @@ $this->load->view('layout/topmenu');
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
-    <h1 class="page-header">Add Event Organizer</h1>
+    <h1 class="page-header">Add Agent</h1>
     <!-- end page-header -->
     <!-- begin profile-container -->
     <div class="profile-container">
@@ -65,12 +65,12 @@ $this->load->view('layout/topmenu');
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label >User Type</label>
-                                        <select name="user_type" class="form-control">
+                                        <select name="user_type" class="form-control"  required="">
                                             <?php
                                             if ($user_type == 'Admin') {
                                                 ;
                                                 ?><
-                                                <option value="Manager">Event Manager</option>
+                                                <option value="Agent">Agent Manager</option>
 <?php } ?>
                                         </select>
                                     </div>
@@ -78,33 +78,33 @@ $this->load->view('layout/topmenu');
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label >First Name</label>
-                                        <input type="text" class="form-control" name="first_name"  placeholder="First Name">
+                                        <input type="text" class="form-control" name="first_name"  placeholder="First Name" required="">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label >Last Name</label>
-                                        <input type="text" class="form-control"  name="last_name"  placeholder="Last Name">
+                                        <input type="text" class="form-control"  name="last_name"  placeholder="Last Name" required="">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Email address</label>
-                                        <input type="email" class="form-control"  name="email" placeholder="Enter email">
+                                        <input type="email" class="form-control"  name="email" placeholder="Enter email" required="">
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Contact No.</label>
-                                        <input type="text" class="form-control"  name="contact_no" placeholder="Contact No.">
+                                        <input type="text" class="form-control"  name="contact_no" placeholder="Contact No." required="">
                                     </div>
                                 </div>
 
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Password</label>
-                                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" name="password">
+                                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" name="password" required="">
                                     </div>
                                 </div>
 

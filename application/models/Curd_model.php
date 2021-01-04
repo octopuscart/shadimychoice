@@ -32,6 +32,15 @@ class Curd_model extends CI_Model {
         $data = $query->row();
         return $data;
     }
+    
+    public function getByForeignKey($table, $foreignkey, $foreignkeyid) {
+        $this->db->where($foreignkey, $foreignkeyid);
+        $query = $this->db->get($table);
+        $data = $query->result_array();
+        return $data;
+    }
+    
+    
 
 }
 

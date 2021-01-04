@@ -39,17 +39,11 @@ class UserManager extends CI_Controller {
         $this->load->view('errors/404');
     }
 
-    public function usersReport() {
-   
-        $data['users_manager'] = $this->User_model->user_reports("Manager");
-      
-
-        $this->load->view('userManager/usersReport', $data);
-    }
+ 
 
     public function usersReportManager() {
   
-        $data['users_manager'] = $this->User_model->user_reports("Manager");
+        $data['users_manager'] = $this->User_model->user_reports("Agent");
         if ($this->user_type == 'Manager') {
             redirect('UserManager/not_granted');
         }
@@ -57,18 +51,7 @@ class UserManager extends CI_Controller {
         $this->load->view('userManager/usersReport', $data);
     }
 
-    public function user_profile_record_xls() {
-        $data['user_type'] = $user_type;
-
-        $data['users_all'] = $this->User_model->user_reports("Manager");
-
-        $filename = 'customers_report_' . date('Ymd') . ".xls";
-        $html = $this->load->view('userManager/userProfileRecordXls', $data, TRUE);
-        ob_clean();
-        header("Content-Disposition: attachment; filename=$filename");
-        header("Content-Type: application/vnd.ms-excel");
-        echo $html;
-    }
+  
 
     public function addManager() {
         $config['upload_path'] = 'assets_main/profile_image';

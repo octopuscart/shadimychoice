@@ -18,25 +18,16 @@ if (DEFAULT_PAYMENT == 'No') {
 
 
 
-$client_menu = array(
-    "title" => "Client Manegement",
-    "icon" => "fa fa-users",
-    "active" => "",
-    "sub_menu" => array(
-        "Clients Reports" => site_url("UserManager/usersReport"),
-    ),
-);
-array_push($menu_control, $client_menu);
 
 
 
 $schedule_menu = array(
-    "title" => "Event Management",
-    "icon" => "fa fa-calendar",
+    "title" => "Member Management",
+    "icon" => "fa fa-user",
     "active" => "",
     "sub_menu" => array(
-        "Add Event" => site_url("Events/addEvent"),
-        "List Of Events" => site_url("Events/listEvents"),
+        "Add Member" => site_url("ShadiProfile/addProfile"),
+        "List Of Members" => site_url("ShadiProfile/listOfProfile"),
         "Schedule Report" => site_url("#"),
     ),
 );
@@ -60,17 +51,6 @@ $lookbook_menu = array(
 if ($userdata['user_type'] == 'Admin') {
     array_push($menu_control, $lookbook_menu);
 }
-//
-//$cms_menu = array(
-//    "title" => "Content Management",
-//    "icon" => "fa fa-file-text",
-//    "active" => "",
-//    "sub_menu" => array(
-//        "Look Book" => site_url("CMS/lookbook"),
-//        "Blog" => site_url("CMS/blog"),
-//    ),
-//);
-//array_push($menu_control, $cms_menu);
 
 
 $msg_menu2 = array(
@@ -83,27 +63,13 @@ $msg_menu2 = array(
     ),
 );
 
-$msg_menu = array(
-    "title" => "Message Management",
-    "icon" => "fa fa-envelope",
-    "active" => "",
-    "sub_menu" => array(
-//        "Report Configuration" => site_url("Configuration/reportConfiguration"),
-    ),
-);
-
-
-array_push($menu_control, $msg_menu2);
-
-
-
 $user_menu = array(
-    "title" => "User Management",
+    "title" => "Agent Management",
     "icon" => "fa fa-user",
     "active" => "",
     "sub_menu" => array(
-        "Add User" => site_url("UserManager/addManager"),
-        "Users Reports" => site_url("UserManager/usersReportManager"),
+        "Add Agent" => site_url("UserManager/addManager"),
+        "Agent Reports" => site_url("UserManager/usersReportManager"),
     ),
 );
 if ($userdata['user_type'] == 'Admin') {
@@ -117,40 +83,21 @@ $setting_menu = array(
     "icon" => "fa fa-cogs",
     "active" => "",
     "sub_menu" => array(
-        "Event Categories"=>site_url("Events/eventCategories"),
+        "Event Categories" => site_url("Events/eventCategories"),
         "System Log" => site_url("Services/systemLogReport"),
         "Report Configuration" => site_url("Configuration/reportConfiguration"),
     ),
 );
 
-
-array_push($menu_control, $setting_menu);
-
-
-
-$social_menu = array(
-    "title" => "Social Management",
-    "icon" => "fa fa-facebook",
-    "active" => "",
-    "sub_menu" => array(
-        "Social Link" => site_url("CMS/socialLink"),
-    ),
-);
-array_push($menu_control, $social_menu);
-
-
-$seo_menu = array(
-    "title" => "SEO",
-    "icon" => "fa fa-calendar",
-    "active" => "",
-    "sub_menu" => array(
-        "General" => site_url("CMS/siteSEOConfigUpdate"),
-        "Page Wise Setting" => site_url("CMS/seoPageSetting"),
-    ),
-);
 if ($userdata['user_type'] == 'Admin') {
-    array_push($menu_control, $seo_menu);
+    array_push($menu_control, $setting_menu);
 }
+
+
+
+
+
+
 
 foreach ($menu_control as $key => $value) {
     $submenu = $value['sub_menu'];

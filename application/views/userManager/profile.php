@@ -153,12 +153,7 @@ $this->load->view('layout/topmenu');
                                     </td>
                                 </tr>
 
-                                <tr class="highlight">
-                                    <td class="field">Country</td>
-                                    <td>
-                                        <span id="country" data-type="select" data-pk="<?php echo $userdata->id; ?>" data-name="country" data-value="<?php echo $userdata->country; ?>" data-url="<?php echo site_url("LocalApi/updateUserClient"); ?>" data-original-title="Select Country" class="m-l-5 editable editable-click" tabindex="-1" > <?php echo $userdata->country; ?></span><button class="btn btn-xs btn-link edit_detail" ><i class="fa fa-pencil"></i>Edit</button>
-                                    </td>
-                                </tr>
+                               
 
 
                             </tbody>

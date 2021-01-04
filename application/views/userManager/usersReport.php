@@ -46,7 +46,7 @@ function userReportFunction($users) {
                 <th style="width: 100px;">Gender </th>
                 <th style="width: 100px;">Birth Date </th>
                 <th style="width: 100px;">Profession </th>
-                <th style="width: 100px;">Country </th>
+
                 <th style="width: 100px;">Reg. Date/Time</th>
                 <th style="width: 75px;">Edit</th>
             </tr>
@@ -108,12 +108,7 @@ function userReportFunction($users) {
                                 <?php echo $value->profession; ?>
                             </span>
                         </td>
-                        <td>
-                            <span class="">
 
-                                <?php echo $value->country; ?>
-                            </span>
-                        </td>
 
 
                         <td>
@@ -144,12 +139,8 @@ function userReportFunction($users) {
         <div class="panel panel-inverse">
             <div class="panel-heading">
                 <h3 class="panel-title">
-                    Users Reports
-                    <span class="pull-right label label-success">
-                        <a class="btn btn-success btn-xs" href="<?php echo site_url('userManager/user_profile_record_xls'); ?>"  targer="_blank">
-                            <i class="fa fa-file-excel-o"></i>  Export Data
-                        </a>
-                    </span>
+                    Agent Reports
+                   
                 </h3>
                 <div class="panel-tools">
 

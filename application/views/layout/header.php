@@ -54,6 +54,10 @@
         <script src="<?php echo base_url(); ?>assets/plugins/pace/pace.min.js"></script>
         <link href="<?php echo base_url(); ?>assets/plugins/gritter/css/jquery.gritter.css" rel="stylesheet" />	
         <!-- ================== END BASE JS ================== -->
+        
+         <!--sweet alert-->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.12.7/dist/sweetalert2.all.min.js"></script>
+
 
 
         <!--angular js-->

@@ -62,7 +62,7 @@ $this->load->view('layout/topmenu');
 
                                         <tbody>
                                             <tr>
-                                                <td>Category</td>
+                                                <td style="width: 300px;">Category</td>
                                                 <td>
                                                     <div class="row">
                                                         <div class="col-md-8">
@@ -77,63 +77,119 @@ $this->load->view('layout/topmenu');
                                                             </select>
                                                         </div>
                                                         <div class="col-md-4">
-                                                            <a href="<?php echo site_url("Events/eventCategories")?>" class="btn btn-sm btn-link">Add Category</a>
+                                                            <a href="<?php echo site_url("Events/eventCategories") ?>" class="btn btn-sm btn-link">Add Category</a>
                                                         </div>
-                                                        
+
                                                 </td>
                                             </tr>
 
                                             <tr >
-                                                <td class="field">Title</td>
+                                                <td class="field">Name</td>
                                                 <td>
-                                                    <input type="text" name="title" class="form-control" placeholder="Event Name" ng-model="mapdata.title">     
+                                                    <input type="text" name="title" class="form-control" placeholder="Profile Name" ng-model="mapdata.title">     
                                                 </td>
                                             </tr>
                                             <tr >
-                                                <td class="field">Description</td>
+                                                <td class="field">Gender</td>
                                                 <td>
-                                                    <input type="text" name="description" class="form-control" placeholder="Description" ng-model="mapdata.description">
-                                                </td>
-                                            </tr>
-
-                                            <tr >
-                                                <td class="field">Venue</td>
-                                                <td>
-                                                    <input type="text" name="venue" class="form-control" placeholder="Vanue Name" ng-model="mapdata.hotel">     
-                                                </td>
-                                            </tr>
-                                            <tr >
-                                                <td class="field">Address</td>
-                                                <td>
-                                                    <input type="text" name="address" class="form-control" placeholder="Address" ng-model="mapdata.address">
+                                                    <select class="form-control">
+                                                        <option value="Male">Male</option>
+                                                        <option value="Female">Female</option>
+                                                    </select>
                                                 </td>
                                             </tr>
 
                                             <tr >
-                                                <td class="field">City</td>
+                                                <td class="field">Date Of Birth</td>
                                                 <td>
-                                                    <input type="text" name="city" class="form-control" placeholder="City" >       
+                                                    <input type="text" name="date_of_birth" class="form-control" placeholder="Date Of Birth" ng-model="mapdata.hotel">     
+                                                </td>
+                                            </tr>
+                                            <tr >
+                                                <td class="field">Marital status</td>
+                                                <td>
+                                                    <select class="form-control">
+                                                        <option value="" label="Select">Select</option>
+                                                        <option value="Never Married" label="Never Married" selected="selected">Never Married</option>
+                                                        <option value="Divorced" label="Divorced">Divorced</option>
+                                                        <option value="Awaiting Divorce" label="Awaiting Divorce">Awaiting Divorce</option>
+                                                    </select>                                                </td>
+                                            </tr>
+
+                                            <tr >
+                                                <td class="field">Height</td>
+                                                <td>
+                                                    <select class="form-control">
+                                                        <option value="" label="Select">Select</option>
+                                                        <option value="53" label="4ft 5in - 134cm">4ft 5in - 134cm</option>
+                                                        <option value="54" label="4ft 6in - 137cm">4ft 6in - 137cm</option>
+                                                        <option value="55" label="4ft 7in - 139cm">4ft 7in - 139cm</option>
+                                                        <option value="56" label="4ft 8in - 142cm">4ft 8in - 142cm</option>
+                                                        <option value="57" label="4ft 9in - 144cm">4ft 9in - 144cm</option>
+                                                        <option value="58" label="4ft 10in - 147cm">4ft 10in - 147cm</option>
+                                                        <option value="59" label="4ft 11in - 149cm">4ft 11in - 149cm</option>
+                                                        <option value="60" label="5ft - 152cm">5ft - 152cm</option>
+                                                        <option value="61" label="5ft 1in - 154cm">5ft 1in - 154cm</option>
+                                                        <option value="62" label="5ft 2in - 157cm">5ft 2in - 157cm</option>
+                                                        <option value="63" label="5ft 3in - 160cm">5ft 3in - 160cm</option>
+                                                        <option value="64" label="5ft 4in - 162cm" selected="selected">5ft 4in - 162cm</option>
+                                                        <option value="65" label="5ft 5in - 165cm">5ft 5in - 165cm</option>
+                                                        <option value="66" label="5ft 6in - 167cm">5ft 6in - 167cm</option>
+                                                        <option value="67" label="5ft 7in - 170cm">5ft 7in - 170cm</option>
+                                                        <option value="68" label="5ft 8in - 172cm">5ft 8in - 172cm</option>
+                                                        <option value="69" label="5ft 9in - 175cm">5ft 9in - 175cm</option>
+                                                        <option value="70" label="5ft 10in - 177cm">5ft 10in - 177cm</option>
+                                                        <option value="71" label="5ft 11in - 180cm">5ft 11in - 180cm</option>
+                                                        <option value="72" label="6ft - 182cm">6ft - 182cm</option>
+                                                        <option value="73" label="6ft 1in - 185cm">6ft 1in - 185cm</option>
+                                                        <option value="74" label="6ft 2in - 187cm">6ft 2in - 187cm</option>
+                                                        <option value="75" label="6ft 3in - 190cm">6ft 3in - 190cm</option>
+                                                        <option value="76" label="6ft 4in - 193cm">6ft 4in - 193cm</option>
+                                                        <option value="77" label="6ft 5in - 195cm">6ft 5in - 195cm</option>
+                                                        <option value="78" label="6ft 6in - 198cm">6ft 6in - 198cm</option>
+                                                        <option value="79" label="6ft 7in - 200cm">6ft 7in - 200cm</option>
+                                                        <option value="80" label="6ft 8in - 203cm">6ft 8in - 203cm</option>
+                                                        <option value="81" label="6ft 9in - 205cm">6ft 9in - 205cm</option>
+                                                        <option value="82" label="6ft 10in - 208cm">6ft 10in - 208cm</option>
+                                                        <option value="83" label="6ft 11in - 210cm">6ft 11in - 210cm</option>
+                                                        <option value="84" label="7ft - 213cm">7ft - 213cm</option>
+                                                    </select>                                                </td>
+                                            </tr>
+
+                                            <tr >
+                                                <td class="field">Weight</td>
+                                                <td>
+                                                    <input type="number" name="weight" class="form-control littletextbox" placeholder="Weight" style="">  KG     
                                                 </td>
                                             </tr>
 
                                             <tr >
-                                                <td class="field">State</td>
+                                                <td class="field">Any Disability?</td>
                                                 <td>
-                                                    <input type="text" name="state" class="form-control" placeholder="State" >       
+                                                    <input type="text" name="disablity" class="form-control" placeholder="Disability" >       
                                                 </td>
                                             </tr>
 
                                             <tr >
-                                                <td class="field">Country</td>
+                                                <td class="field">Blood Group</td>
                                                 <td>
-                                                    <input type="text" name="country" class="form-control" placeholder="Country">
-                                                </td>
+                                                    <select class="form-control">
+                                                        <option value="" label="Select" selected="selected">Select</option>
+                                                        <option value="Don't Know" label="Don't Know">Don't Know</option>
+                                                        <option value="A+" label="A+">A+</option>
+                                                        <option value="A-" label="A-">A-</option>
+                                                        <option value="B+" label="B+">B+</option>
+                                                        <option value="B-" label="B-">B-</option>
+                                                        <option value="AB+" label="AB+">AB+</option>
+                                                        <option value="AB-" label="AB-">AB-</option>
+                                                        <option value="O+" label="O+">O+</option>
+                                                        <option value="O-" label="O-">O-</option>
+                                                    </select>                                                 </td>
                                             </tr>
 
                                             <tr >
                                                 <td class="field">Contact No.</td>
                                                 <td>
-                                                    <input type="text" name="contact_no" class="form-control" placeholder="Contact No.">                                            </td>
                                             </tr>
 
 
