@@ -66,7 +66,7 @@ class ShadiProfile extends CI_Controller {
             $this->db->where("id", $last_id);
             $this->db->set("member_id", $profile_id);
             $this->db->update("shadi_profile");
-            redirect("ShadiProfile/memberProfile/" . $profile_id);
+            redirect("ShadiProfile/viewProfile/" . $profile_id);
         }
 
 

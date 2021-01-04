@@ -229,7 +229,7 @@ limit $start, $length";
             $query = $this->db->get("admin_users");
             $manager = $query->row_array();
             if ($manager) {
-                $profile["manager"] = $manager['first_name']. " ".$manager['last_name'];
+                $profile["agent"] = $manager['first_name']. " ".$manager['last_name'];
             }
             $profileiamge = $this->getProfilePhoto($value['member_id']);
             $profile['profileimage'] = $profileiamge;
