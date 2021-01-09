@@ -201,7 +201,7 @@ class LocalApi extends REST_Controller {
         }
 
 
-        $query = "SELECT member_id, name, gender, manager_id,
+        $query_row = "SELECT member_id, name, gender, manager_id,
             scc.title as religion, sc.title as community,
             lss.title as state, lsc.title as city  FROM shadi_profile as sbp
 left join set_states as lss on lss.id = sbp.family_location_state
@@ -210,14 +210,16 @@ left join set_community_category as scc on scc.id = sbp.religion
 left join set_community as sc on sc.id = sbp.community
 where status = 'Active'  $searchfilter $managerfilter
 order by sbp.id desc
+";
+        $query_m = $this->db->query($query);
+        $profilecount = $query_m->result_array();
 
-limit $start, $length";
-        $query1 = $this->db->query($query);
-        $listcount = $query1->result_array();
+        $query_row2 = $query_row . " limit $start, $length";
+
+        $query_m2 = $this->db->query($query);
+        $listcount = $query_m2->result_array();
 
 
-        $query = $this->db->get("shadi_profile");
-        $profilecount = $query->result_array();
 
 
         $profilelist = array();
@@ -229,7 +231,7 @@ limit $start, $length";
             $query = $this->db->get("admin_users");
             $manager = $query->row_array();
             if ($manager) {
-                $profile["agent"] = $manager['first_name']. " ".$manager['last_name'];
+                $profile["agent"] = $manager['first_name'] . " " . $manager['last_name'];
             }
             $profileiamge = $this->getProfilePhoto($value['member_id']);
             $profile['profileimage'] = $profileiamge;
@@ -243,8 +245,8 @@ limit $start, $length";
         }
         $output = array(
             "draw" => $draw,
-            "recordsTotal" => $query->num_rows(),
-            "recordsFiltered" => $query1->num_rows(),
+            "recordsTotal" => $query_m->num_rows(),
+            "recordsFiltered" => $query2->num_rows(),
             "data" => $profilelist
         );
         $this->response($output);
@@ -347,10 +349,10 @@ limit $start, $length";
 
         $this->response(array("photos" => $photoarray, "profile" => $basicdata));
     }
-    
+
     function getShadiProfileContact_get($profile_id) {
         $this->db->where("member_id", $profile_id);
-     
+
         $query = $this->db->get("shadi_profile_contact");
         $profileContact = $query->result_array();
         $contactarray = array();
