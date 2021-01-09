@@ -246,7 +246,7 @@ order by sbp.id desc
         $output = array(
             "draw" => $draw,
             "recordsTotal" => $query_m->num_rows(),
-            "recordsFiltered" => $query2->num_rows(),
+            "recordsFiltered" => $query_m2->num_rows(),
             "data" => $profilelist
         );
         $this->response($output);
