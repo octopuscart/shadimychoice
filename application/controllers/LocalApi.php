@@ -211,12 +211,12 @@ left join set_community as sc on sc.id = sbp.community
 where status = 'Active'  $searchfilter $managerfilter
 order by sbp.id desc
 ";
-        $query_m = $this->db->query($query);
+        $query_m = $this->db->query($query_row);
         $profilecount = $query_m->result_array();
 
         $query_row2 = $query_row . " limit $start, $length";
 
-        $query_m2 = $this->db->query($query);
+        $query_m2 = $this->db->query($query_row2);
         $listcount = $query_m2->result_array();
 
 
