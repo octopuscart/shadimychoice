@@ -15,6 +15,8 @@ class ShadiProfile extends CI_Controller {
         $this->load->model('Event_model');
         $this->curd = $this->load->model('Curd_model');
         $this->userdata = $this->session->userdata('logged_in');
+
+        
     }
 
     public function addProfile() {
@@ -209,6 +211,78 @@ class ShadiProfile extends CI_Controller {
             redirect('ShadiProfile/profilePhotos/' . $profile_id);
         }
         $this->load->view('shadiProfile/profilePhotos', $data);
+    }
+
+    function profilePhotosFrontEnd($profile_id) {
+        $data = array("profile_id" => $profile_id);
+        $config['upload_path'] = 'assets/profile_image';
+        $config['allowed_types'] = '*';
+        if (isset($_POST['submit'])) {
+            $picture = '';
+            if (!empty($_FILES['picture']['name'])) {
+                $temp1 = rand(100, 1000000);
+                $ext1 = explode('.', $_FILES['picture']['name']);
+                $ext = strtolower(end($ext1));
+                $file_newname = $temp1 . $profile_id;
+
+                $config['file_name'] = $file_newname;
+                $this->load->library('upload', $config);
+                $this->upload->initialize($config);
+                if ($this->upload->do_upload('picture')) {
+                    $uploadData = $this->upload->data();
+                    $picture = $uploadData['file_name'];
+                } else {
+                    $picture = '';
+                }
+            }
+
+
+            $post_data = array(
+                'member_id' => $profile_id,
+                'image' => $picture,
+                'status' => "",
+                'datetime' => date("Y-m-d H:m:s"),
+                'display_index' => 0,
+            );
+            $this->db->insert('shadi_profile_photos', $post_data);
+            $siteurlredirect = $this->input->post("siteurl");
+            redirect($siteurlredirect);
+        }
+
+        if (isset($_POST['reindex'])) {
+            $image_index = $this->input->post("image_index");
+            $imageids = $this->input->post("image_id");
+            foreach ($imageids as $key => $value) {
+                $imgid = $imageids[$key];
+                $imgidx = $image_index[$key];
+                $indexarray = array(
+                    "display_index" => $imgidx,
+                );
+                $this->db->where("id", $imgid);
+                $this->db->set($indexarray);
+                $this->db->update("shadi_profile_photos");
+            }
+        }
+        if (isset($_POST['profilePhoto'])) {
+            $this->db->where("member_id", $profile_id);
+            $this->db->where("status", "profile");
+            $this->db->set(array("status" => ""));
+            $this->db->update("shadi_profile_photos");
+            $imageids = $this->input->post("photo_id");
+            $indexarray = array(
+                "status" => "profile",
+            );
+            $this->db->where("id", $imageids);
+            $this->db->set($indexarray);
+            $this->db->update("shadi_profile_photos");
+        }
+        if (isset($_POST['deletePhoto'])) {
+
+
+            $imageids = $this->input->post("photo_id");
+            $this->db->where("id", $imageids);
+            $this->db->delete("shadi_profile_photos");
+        }
     }
 
     function profileContact($profile_id) {

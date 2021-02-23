@@ -20,7 +20,7 @@ class JsonSorting extends CI_Model {
 
     public function collect_data($keyname) {
         $datalist = array();
-        $ll2 = array();
+        $colletion = array();
         $count1 = 0;
         foreach ($this->source as $key => $value) {
             $temp = $value[$keyname];
@@ -32,9 +32,26 @@ class JsonSorting extends CI_Model {
         }
         foreach ($datalist as $key => $value) {
             $temp1 = $this->count_values($keyname, $value);
-            $ll2[$temp1[0]] = $temp1[1];
+            $colletion[$temp1[0]] = $temp1[1];
         }
-        return $ll2;
+        $countlist = array_values($colletion);
+        rsort($countlist);
+        $countlistunique = array_unique($countlist);
+        $mainlistdict = array();
+        foreach ($colletion as $key => $value) {
+            if (isset($mainlistdict[$value])) {
+                array_push($mainlistdict[$value], $key);
+            } else {
+                $mainlistdict[$value] = [$key];
+            }
+        }
+        $finalarray = array();
+        foreach ($countlistunique as $mkey => $mvalue) {
+            foreach ($mainlistdict[$mvalue] as $key => $value) {
+                $finalarray[$value] = $mvalue;
+            }
+        }
+        return $finalarray;
     }
 
     public function data_combination($keyname1, $keyname2) {

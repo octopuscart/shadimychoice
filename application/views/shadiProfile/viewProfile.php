@@ -95,27 +95,26 @@ $this->load->view('layout/topmenu');
                                                     </td>
                                                 </tr>
 
-
-                                                <tr >
+ <tr >
                                                     <td class="field">Marital status</td>
                                                     <td>
-                                                        {{marital_status.status}}
+                                                        {{memberData.profile.marital_status}}
 
                                                     </td>
                                                 </tr>
 
-                                                <tr ng-if="marital_status.status != 'Never Married'">
+                                                <tr ng-if="memberData.profile.marital_status != 'Never Married'">
                                                     <td class="field">Have children</td>
                                                     <td>
-                                                        {{marital_status.marital_status_children}}
+                                                        {{memberData.profile.marital_status_children}}
                                                     </td>
                                                 </tr>
 
-                                                <tr ng-if="marital_status.status != 'Never Married'">
+                                                <tr ng-if="memberData.profile.marital_status != 'Never Married'">
                                                     <td class="field">No. of children</td>
                                                     <td>
-                                                        <span ng-if="marital_status.marital_status_children != 'No'">{{marital_status.marital_children_count}}</span>
-                                                        <span ng-if="marital_status.marital_status_children == 'No'">{{marital_status.marital_children_count}}</span>
+                                                        <span ng-if="memberData.profile.marital_status_children != 'No'">{{memberData.profile.marital_children_count}}</span>
+                                                        <span ng-if="memberData.profile.marital_status_children == 'No'">{{memberData.profile.marital_children_count}}</span>
 
 
                                                     </td>
