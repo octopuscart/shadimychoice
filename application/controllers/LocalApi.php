@@ -9,6 +9,7 @@ class LocalApi extends REST_Controller {
         parent::__construct();
         $this->checklogin = $this->session->userdata('logged_in');
         $this->load->model('Order_model');
+        $this->load->model('Shadi_model');
         $this->load->model('Curd_model');
         $this->userdata = $this->session->userdata('logged_in');
     }
@@ -167,17 +168,7 @@ class LocalApi extends REST_Controller {
         $this->response($systemlog);
     }
 
-    function getProfilePhoto($member_id) {
-        $defaultImage = base_url() . "assets/emoji/user.png";
-        $this->db->where("member_id", $member_id);
-        $this->db->where("status", "profile");
-        $query = $this->db->get("shadi_profile_photos");
-        $profilephoto = $query->row();
-        if ($profilephoto) {
-            $defaultImage = base_url() . "assets/profile_image/" . $profilephoto->image;
-        }
-        return $defaultImage;
-    }
+
 
     //shadiApi
     function profileListApi_get() {
@@ -233,7 +224,7 @@ order by sbp.id desc
             if ($manager) {
                 $profile["agent"] = $manager['first_name'] . " " . $manager['last_name'];
             }
-            $profileiamge = $this->getProfilePhoto($value['member_id']);
+            $profileiamge = $this->Shadi_model->getProfilePhoto($value['member_id']);
             $profile['profileimage'] = $profileiamge;
 
             $profile['location'] = $value['city'] . ", " . $value['state'];
@@ -253,70 +244,7 @@ order by sbp.id desc
     }
 
     function getShadiProfileById_get($member_id) {
-        $this->db->where("member_id", $member_id);
-        $query = $this->db->get("shadi_profile");
-        $basicdata = $query->row();
-
-        $profileiamge = $this->getProfilePhoto($member_id);
-        $basicdata->profile_photo = $profileiamge;
-
-        //community
-        $religion = $this->Curd_model->get_single("set_community_category", $basicdata->religion);
-        $basicdata->religion_title = $religion->title;
-
-        $community = $this->Curd_model->get_single("set_community", $basicdata->community);
-        $basicdata->community_title = $community ? $community->title : '';
-        //end of community
-        //
-        //mother tounge
-        $mother_tongue = $this->Curd_model->get_single("set_mother_tongue", $basicdata->mother_tongue);
-        $basicdata->mother_tongue_title = $mother_tongue->title;
-        //end fo mother tounge
-        //
-        //qualification
-        $high_qualification = $this->Curd_model->get_single("set_qualification", $basicdata->high_qualification);
-        $basicdata->high_qualification_title = $high_qualification ? $high_qualification->title : '';
-        $basicdata->high_qualification_category_title = "";
-        if ($high_qualification) {
-            $high_qualification_category = $this->Curd_model->get_single("set_qualification_category", $high_qualification->category_id);
-            $basicdata->high_qualification_category_title = $high_qualification_category ? $high_qualification_category->title : "";
-        }
-        //end fo qualification
-        //
-        //birth location
-        $birth_location_state = $this->Curd_model->get_single("set_states", $basicdata->birth_location_state);
-        $basicdata->birth_location_state_title = $birth_location_state ? $birth_location_state->title : '';
-
-        $birth_location_city = $this->Curd_model->get_single("set_cities", $basicdata->birth_location_city);
-        $basicdata->birth_location_city_title = $birth_location_city ? $birth_location_city->title : "";
-        //end birth location
-        //
-        //family location
-        $family_location_state = $this->Curd_model->get_single("set_states", $basicdata->family_location_state);
-        $basicdata->family_location_state_title = $family_location_state ? $family_location_state->title : "";
-
-        $family_location_city = $this->Curd_model->get_single("set_cities", $basicdata->family_location_city);
-        $basicdata->family_location_city_title = $family_location_city ? $family_location_city->title : "";
-        //end family location
-        //
-        //annual income
-        $career_income = $this->Curd_model->get_single("set_annual_income", $basicdata->career_income);
-        $basicdata->career_income_title = $career_income ? $career_income->title : '';
-        //end fo annual income
-        //
-        //profession
-        $career_sector = $this->Curd_model->get_single("set_profession_sector", $basicdata->career_sector);
-        $basicdata->career_sector_title = $career_sector ? $career_sector->title : "";
-
-        $profession = $this->Curd_model->get_single("set_profession", $basicdata->career_profession);
-        $basicdata->career_profession_title = $profession ? $profession->title : '';
-        if ($profession) {
-            $profession_category = $this->Curd_model->get_single("set_profession_category", $profession->category_id);
-            $basicdata->career_profession_category_title = $profession_category ? $profession_category->title : '';
-        } else {
-            $basicdata->career_profession_category_title = "";
-        }
-        //end fo profession
+        $basicdata = $this->Shadi_model->getShadiProfileById($member_id);
         $this->response($basicdata);
     }
 
@@ -344,7 +272,7 @@ order by sbp.id desc
         $this->db->where("member_id", $profile_id);
         $query = $this->db->get("shadi_profile");
         $basicdata = $query->row();
-        $profileiamge = $this->getProfilePhoto($profile_id);
+        $profileiamge = $this->Shadi_model->getProfilePhoto($profile_id);
         $basicdata->profile_photo = $profileiamge;
 
         $this->response(array("photos" => $photoarray, "profile" => $basicdata));
@@ -363,7 +291,7 @@ order by sbp.id desc
         $this->db->where("member_id", $profile_id);
         $query = $this->db->get("shadi_profile");
         $basicdata = $query->row();
-        $profileiamge = $this->getProfilePhoto($profile_id);
+        $profileiamge = $this->Shadi_model->getProfilePhoto($profile_id);
         $basicdata->profile_photo = $profileiamge;
 
         $this->response(array("contact" => $contactarray, "profile" => $basicdata));

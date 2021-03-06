@@ -37,9 +37,7 @@ class Shadi_model extends CI_Model {
         return $finaldata;
     }
 
-    function getProfilePhoto($member_id, $gender) {
-        $defaultimageexe = $gender == 'Male' ? 'male.jpg' : 'female.jpg';
-        $defaultImage = base_url() . "assets/emoji/$defaultimageexe";
+    function getProfilePhoto($member_id) {
         $this->db->where("member_id", $member_id);
         $this->db->where("status", "profile");
         $query = $this->db->get("shadi_profile_photos");
@@ -58,14 +56,17 @@ class Shadi_model extends CI_Model {
             }
 
             $defaultImage = $baselinkmain . "assets/profile_image/" . $profilephoto->image;
+        } else {
+            $defaultimageexe = $profilephoto->gender == 'Male' ? 'male.jpg' : 'female.jpg';
+            $defaultImage = base_url() . "assets/emoji/$defaultimageexe";
         }
+
         return $defaultImage;
     }
 
-    function getProfilePhotoAll($member_id, $gender) {
+    function getProfilePhotoAll($member_id) {
 //        echo "===".$gender."===";
-        $defaultimageexe = $gender == 'Male' ? 'male.jpg' : 'female.jpg';
-        $defaultImage = base_url() . "assets/emoji/$defaultimageexe";
+
         $this->db->where("member_id", $member_id);
         $query = $this->db->get("shadi_profile_photos");
         $profilephoto = $query->result();
@@ -81,9 +82,15 @@ class Shadi_model extends CI_Model {
                 $baselinkmain = base_url();
         }
         $imagelist = [];
-        foreach ($profilephoto as $key => $value) {
-            $image = $baselinkmain . "assets/profile_image/" . $value->image;
-            array_push($imagelist, $image);
+        if ($profilephoto) {
+            foreach ($profilephoto as $key => $value) {
+                $image = $baselinkmain . "assets/profile_image/" . $value->image;
+                array_push($imagelist, $image);
+            }
+        } else {
+            $defaultimageexe = $profilephoto->gender == 'Male' ? 'male.jpg' : 'female.jpg';
+            $defaultImage = base_url() . "assets/emoji/$defaultimageexe";
+            array_push($imagelist, $defaultImage);
         }
         return $imagelist;
     }
@@ -107,11 +114,79 @@ where status = 'Active' and member_id = '$member_id'
 order by sbp.id desc";
         $query_m = $this->db->query($query);
         $profile = $query_m->row_array();
-        $profile["community"] = $profile["community"] ? $profile["community"]:"-";
-     
-        $profile_image = $this->getProfilePhoto($member_id, $profile["gender"]);
+        $profile["community"] = $profile["community"] ? $profile["community"] : "-";
+
+        $profile_image = $this->getProfilePhoto($member_id);
         $profile['profile_image'] = $profile_image;
         return $profile;
+    }
+
+    function getShadiProfileById($member_id) {
+        $this->db->where("member_id", $member_id);
+        $query = $this->db->get("shadi_profile");
+        $basicdata = $query->row();
+
+        $profileiamge = $this->getProfilePhoto($member_id);
+        $basicdata->profile_photo = $profileiamge;
+
+        //community
+        $religion = $this->Curd_model->get_single("set_community_category", $basicdata->religion);
+        $basicdata->religion_title = $religion->title;
+
+        $community = $this->Curd_model->get_single("set_community", $basicdata->community);
+        $basicdata->community_title = $community ? $community->title : '';
+        //end of community
+        //
+        //mother tounge
+        $mother_tongue = $this->Curd_model->get_single("set_mother_tongue", $basicdata->mother_tongue);
+        $basicdata->mother_tongue_title = $mother_tongue->title;
+        //end fo mother tounge
+        //
+        //qualification
+        $high_qualification = $this->Curd_model->get_single("set_qualification", $basicdata->high_qualification);
+        $basicdata->high_qualification_title = $high_qualification ? $high_qualification->title : '';
+        $basicdata->high_qualification_category_title = "";
+        if ($high_qualification) {
+            $high_qualification_category = $this->Curd_model->get_single("set_qualification_category", $high_qualification->category_id);
+            $basicdata->high_qualification_category_title = $high_qualification_category ? $high_qualification_category->title : "";
+        }
+        //end fo qualification
+        //
+        //birth location
+        $birth_location_state = $this->Curd_model->get_single("set_states", $basicdata->birth_location_state);
+        $basicdata->birth_location_state_title = $birth_location_state ? $birth_location_state->title : '';
+
+        $birth_location_city = $this->Curd_model->get_single("set_cities", $basicdata->birth_location_city);
+        $basicdata->birth_location_city_title = $birth_location_city ? $birth_location_city->title : "";
+        //end birth location
+        //
+        //family location
+        $family_location_state = $this->Curd_model->get_single("set_states", $basicdata->family_location_state);
+        $basicdata->family_location_state_title = $family_location_state ? $family_location_state->title : "";
+
+        $family_location_city = $this->Curd_model->get_single("set_cities", $basicdata->family_location_city);
+        $basicdata->family_location_city_title = $family_location_city ? $family_location_city->title : "";
+        //end family location
+        //
+        //annual income
+        $career_income = $this->Curd_model->get_single("set_annual_income", $basicdata->career_income);
+        $basicdata->career_income_title = $career_income ? $career_income->title : '';
+        //end fo annual income
+        //
+        //profession
+        $career_sector = $this->Curd_model->get_single("set_profession_sector", $basicdata->career_sector);
+        $basicdata->career_sector_title = $career_sector ? $career_sector->title : "";
+
+        $profession = $this->Curd_model->get_single("set_profession", $basicdata->career_profession);
+        $basicdata->career_profession_title = $profession ? $profession->title : '';
+        if ($profession) {
+            $profession_category = $this->Curd_model->get_single("set_profession_category", $profession->category_id);
+            $basicdata->career_profession_category_title = $profession_category ? $profession_category->title : '';
+        } else {
+            $basicdata->career_profession_category_title = "";
+        }
+        //end fo profession
+        return $basicdata;
     }
 
 }

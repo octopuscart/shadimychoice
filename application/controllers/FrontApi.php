@@ -90,8 +90,8 @@ class FrontApi extends REST_Controller {
         $memberListFinal1 = $query->result_array();
 
         $memberListFinal = [];
-        foreach ($memberListFinal1 as $key => $value) { 
-            if(($value['gender'])) {
+        foreach ($memberListFinal1 as $key => $value) {
+            if (($value['gender'])) {
                 $memberobj = $this->Shadi_model->getShortInformation($value['member_id']);
                 array_push($memberListFinal, $memberobj);
             }
@@ -130,77 +130,7 @@ class FrontApi extends REST_Controller {
     }
 
     function getShadiProfileById_get($member_id) {
-        $this->db->where("member_id", $member_id);
-        $query = $this->db->get("shadi_profile");
-        $basicdata = $query->row();
-
-        $profileiamge = $this->Shadi_model->getProfilePhoto($member_id, $basicdata->gender);
-        $basicdata->profile_photo = $profileiamge;
-
-        $profileiamges = $this->Shadi_model->getProfilePhotoAll($member_id, $basicdata->gender);
-        $basicdata->profile_photo_all = $profileiamges;
-
-        $basicdata->baseProfile = $this->Shadi_model->getShortInformation($member_id);
-
-
-
-        //community
-        $religion = $this->Curd_model->get_single("set_community_category", $basicdata->religion);
-        $basicdata->religion_title = $religion->title;
-
-        $community = $this->Curd_model->get_single("set_community", $basicdata->community);
-        $basicdata->community_title = $community ? $community->title : '';
-        //end of community
-        //
-        //mother tounge
-        $mother_tongue = $this->Curd_model->get_single("set_mother_tongue", $basicdata->mother_tongue);
-        $basicdata->mother_tongue_title = $mother_tongue->title;
-        //end fo mother tounge
-        //
-        //qualification
-        $high_qualification = $this->Curd_model->get_single("set_qualification", $basicdata->high_qualification);
-        $basicdata->high_qualification_title = $high_qualification ? $high_qualification->title : '';
-        $basicdata->high_qualification_category_title = "";
-        if ($high_qualification) {
-            $high_qualification_category = $this->Curd_model->get_single("set_qualification_category", $high_qualification->category_id);
-            $basicdata->high_qualification_category_title = $high_qualification_category ? $high_qualification_category->title : "";
-        }
-        //end fo qualification
-        //
-        //birth location
-        $birth_location_state = $this->Curd_model->get_single("set_states", $basicdata->birth_location_state);
-        $basicdata->birth_location_state_title = $birth_location_state ? $birth_location_state->title : '';
-
-        $birth_location_city = $this->Curd_model->get_single("set_cities", $basicdata->birth_location_city);
-        $basicdata->birth_location_city_title = $birth_location_city ? $birth_location_city->title : "";
-        //end birth location
-        //
-        //family location
-        $family_location_state = $this->Curd_model->get_single("set_states", $basicdata->family_location_state);
-        $basicdata->family_location_state_title = $family_location_state ? $family_location_state->title : "";
-
-        $family_location_city = $this->Curd_model->get_single("set_cities", $basicdata->family_location_city);
-        $basicdata->family_location_city_title = $family_location_city ? $family_location_city->title : "";
-        //end family location
-        //
-        //annual income
-        $career_income = $this->Curd_model->get_single("set_annual_income", $basicdata->career_income);
-        $basicdata->career_income_title = $career_income ? $career_income->title : '';
-        //end fo annual income
-        //
-        //profession
-        $career_sector = $this->Curd_model->get_single("set_profession_sector", $basicdata->career_sector);
-        $basicdata->career_sector_title = $career_sector ? $career_sector->title : "";
-
-        $profession = $this->Curd_model->get_single("set_profession", $basicdata->career_profession);
-        $basicdata->career_profession_title = $profession ? $profession->title : '';
-        if ($profession) {
-            $profession_category = $this->Curd_model->get_single("set_profession_category", $profession->category_id);
-            $basicdata->career_profession_category_title = $profession_category ? $profession_category->title : '';
-        } else {
-            $basicdata->career_profession_category_title = "";
-        }
-        //end fo profession
+        $basicdata = $this->Shadi_model->getShadiProfileById($member_id);
         $this->response($basicdata);
     }
 
@@ -289,6 +219,55 @@ class FrontApi extends REST_Controller {
             array_push($finaldata, $value);
         }
         $this->response($finaldata);
+    }
+
+    function sendSms_get() {
+        $api_key = '56038B83D0D233';
+        $contacts = '8602648733';
+        $from = 'FIVEDU';
+        $sms_text = urlencode('Hello People, have a great day');
+
+//Submit to server
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, "http://sms.arasko.com/app/smsapi/index.php");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, "key=" . $api_key . "&campaign=10800&routeid=7&type=text&contacts=" . $contacts . "&senderid=" . $from . "&msg=" . $sms_text);
+        $response = curl_exec($ch);
+        curl_close($ch);
+        echo $response;
+    }
+
+    function getQualification_get() {
+        $set_qualification_category = $this->Curd_model->get("set_qualification_category");
+        $set_qualification_dict = [];
+        foreach ($set_qualification_category as $key => $value) {
+            $sub_category = $this->Curd_model->getByForeignKey("set_qualification", "category_id", $value['id']);
+            foreach ($sub_category as $skey => $svalue) {
+                $svalue["group"] = $value["title"];
+                array_push($set_qualification_dict, $svalue);
+            }
+        }
+        $this->response($set_qualification_dict);
+    }
+
+    function getProfession_get() {
+        $set_profession_category = $this->Curd_model->get("set_profession_category");
+        $set_profession_dict = [];
+        foreach ($set_profession_category as $key => $value) {
+            $sub_category = $this->Curd_model->getByForeignKey("set_profession", "category_id", $value['id']);
+            foreach ($sub_category as $skey => $svalue) {
+                $svalue["group"] = $value["title"];
+                array_push($set_profession_dict, $svalue);
+            }
+        }
+        $this->response($set_profession_dict);
+    }
+    
+    function professionSector_get(){
+        $set_profession_sector = $this->Curd_model->get("set_profession_sector");
+        $this->response($set_profession_sector);
     }
 
 }
