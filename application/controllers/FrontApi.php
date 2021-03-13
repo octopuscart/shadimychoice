@@ -1,11 +1,13 @@
 <?php
 
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 require(APPPATH . 'libraries/REST_Controller.php');
 
-class FrontApi extends REST_Controller {
+class FrontApi extends REST_Controller
+{
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->load->model('Shadi_model');
         $this->load->library('session');
@@ -14,15 +16,14 @@ class FrontApi extends REST_Controller {
         $this->user_id = $this->session->userdata('logged_in')['login_id'];
     }
 
-    public function memberFilterApi_get() {
+    public function memberFilterApi_get()
+    {
         $this->db->select("member_id, career_income, religion, career_sector, career_profession, "
-                . "family_location_state, mother_tongue, family_location_city, high_qualification");
+            . "family_location_state, mother_tongue, family_location_city, high_qualification");
         $this->db->order_by("id desc");
-//        $query = $this->db->where("gender", "Female");
+        //        $query = $this->db->where("gender", "Female");
         $query = $this->db->get("shadi_profile");
         $result = $query->result_array();
-
-
 
         $this->load->library('JsonSorting', $result);
 
@@ -40,13 +41,13 @@ class FrontApi extends REST_Controller {
 
         $high_qualification = $this->jsonsorting->collect_data('high_qualification');
 
-//        SELECT * FROM `set_qualification` as sq
-//join set_qualification_category as sqc on sqc.id = sq.category_id
-//where sq.id in (5,9,7,2,88,1,23,4,18,47,6,3,14,33,30,10)
+        //        SELECT * FROM `set_qualification` as sq
+        //join set_qualification_category as sqc on sqc.id = sq.category_id
+        //where sq.id in (5,9,7,2,88,1,23,4,18,47,6,3,14,33,30,10)
 
 
         $career_profession = $this->jsonsorting->collect_data('career_profession');
-//        print_r($career_profession);
+        //        print_r($career_profession);
 
 
         $mother_tongue = $this->jsonsorting->collect_data('mother_tongue');
@@ -72,7 +73,8 @@ class FrontApi extends REST_Controller {
         $this->response(array("filter" => $filterdata, "total_members" => count($result)));
     }
 
-    public function memberListApi_get() {
+    public function memberListApi_get()
+    {
         $attrdatak = $this->get();
         $products = [];
         $countpr = 0;
@@ -81,10 +83,10 @@ class FrontApi extends REST_Controller {
         unset($attrdatak["start"]);
         unset($attrdatak["end"]);
         $this->db->select("member_id, career_income, religion, career_sector, career_profession, gender, "
-                . "family_location_state, mother_tongue, family_location_city, high_qualification");
+            . "family_location_state, mother_tongue, family_location_city, high_qualification");
         $this->db->order_by("id desc");
         $this->db->limit(16, $startpage);
-//        $query = $this->db->where("gender", "Female");
+        //        $query = $this->db->where("gender", "Female");
         $query = $this->db->where("status", "Active");
         $query = $this->db->get("shadi_profile");
         $memberListFinal1 = $query->result_array();
@@ -97,14 +99,16 @@ class FrontApi extends REST_Controller {
             }
         }
         $this->output->set_header('Content-type: application/json');
-        $memberArray = array('attributes' => array(),
+        $memberArray = array(
+            'attributes' => array(),
             'memberslist' => $memberListFinal,
             'offers' => array(),
         );
         $this->response($memberArray);
     }
 
-    function getProfilePhoto($member_id) {
+    function getProfilePhoto($member_id)
+    {
         $defaultImage = base_url() . "assets/emoji/user.png";
         $this->db->where("member_id", $member_id);
         $this->db->where("status", "profile");
@@ -116,7 +120,8 @@ class FrontApi extends REST_Controller {
         return $defaultImage;
     }
 
-    function getProfilePhotosAll($member_id) {
+    function getProfilePhotosAll($member_id)
+    {
         $defaultImage = base_url() . "assets/emoji/user.png";
         $this->db->where("member_id", $member_id);
         $query = $this->db->get("shadi_profile_photos");
@@ -129,12 +134,16 @@ class FrontApi extends REST_Controller {
         return $photoarray;
     }
 
-    function getShadiProfileById_get($member_id) {
+    function getShadiProfileById_get($member_id)
+    {
         $basicdata = $this->Shadi_model->getShadiProfileById($member_id);
         $this->response($basicdata);
     }
 
-    function login_get() {
+
+
+    function login_get()
+    {
         $mobile_no = $this->get("mobile");
         $this->db->where("contact_no", $mobile_no);
         $query = $this->db->get("admin_users");
@@ -147,7 +156,8 @@ class FrontApi extends REST_Controller {
         $this->response($data);
     }
 
-    function checklogin_get() {
+    function checklogin_get()
+    {
         $mobile_no = $this->get("mobile");
         $password = $this->get("otp");
         $this->db->where("password", md5($password));
@@ -162,7 +172,8 @@ class FrontApi extends REST_Controller {
         $this->response($data);
     }
 
-    function managerMemberList_get($manager_id, $usertype) {
+    function managerMemberList_get($manager_id, $usertype)
+    {
         $userid = $manager_id;
 
         $start = intval($this->input->get("start"));
@@ -171,7 +182,7 @@ class FrontApi extends REST_Controller {
         $length = "100";
         $search = "";
 
-//        $search = $this->input->get("search")['value'];
+        //        $search = $this->input->get("search")['value'];
 
         $managerfilter = "";
 
@@ -181,16 +192,15 @@ class FrontApi extends REST_Controller {
 
 
         $this->db->select("member_id, career_income, religion, career_sector, career_profession, "
-                . "family_location_state, mother_tongue, family_location_city, high_qualification");
+            . "family_location_state, mother_tongue, family_location_city, high_qualification");
         if ($usertype == 'Admin') {
-            
         } else {
             $this->db->where("manager_id", $userid);
         }
         $this->db->where("status", "active");
 
         $this->db->order_by("id desc");
-//        $this->db->limit(16, $startpage);
+        //        $this->db->limit(16, $startpage);
         $query = $this->db->get("shadi_profile");
         $memberListFinal1 = $query->result_array();
         $memberListFinal = [];
@@ -208,7 +218,8 @@ class FrontApi extends REST_Controller {
         $this->response($memberListFinal);
     }
 
-    function getCommunities_get() {
+    function getCommunities_get()
+    {
         $query = $this->db->get("set_community_category");
         $category = $query->result_array();
         $finaldata = [];
@@ -221,13 +232,14 @@ class FrontApi extends REST_Controller {
         $this->response($finaldata);
     }
 
-    function sendSms_get() {
+    function sendSms_get()
+    {
         $api_key = '56038B83D0D233';
         $contacts = '8602648733';
         $from = 'FIVEDU';
         $sms_text = urlencode('Hello People, have a great day');
 
-//Submit to server
+        //Submit to server
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "http://sms.arasko.com/app/smsapi/index.php");
@@ -239,7 +251,8 @@ class FrontApi extends REST_Controller {
         echo $response;
     }
 
-    function getQualification_get() {
+    function getQualification_get()
+    {
         $set_qualification_category = $this->Curd_model->get("set_qualification_category");
         $set_qualification_dict = [];
         foreach ($set_qualification_category as $key => $value) {
@@ -252,7 +265,8 @@ class FrontApi extends REST_Controller {
         $this->response($set_qualification_dict);
     }
 
-    function getProfession_get() {
+    function getProfession_get()
+    {
         $set_profession_category = $this->Curd_model->get("set_profession_category");
         $set_profession_dict = [];
         foreach ($set_profession_category as $key => $value) {
@@ -264,12 +278,16 @@ class FrontApi extends REST_Controller {
         }
         $this->response($set_profession_dict);
     }
-    
-    function professionSector_get(){
+
+    function professionSector_get()
+    {
         $set_profession_sector = $this->Curd_model->get("set_profession_sector");
         $this->response($set_profession_sector);
     }
 
+    function getTableData_get($tablename)
+    {
+        $set_profession_sector = $this->Curd_model->get($tablename);
+        $this->response($set_profession_sector);
+    }
 }
-
-?>

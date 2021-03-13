@@ -37,7 +37,7 @@ class Shadi_model extends CI_Model {
         return $finaldata;
     }
 
-    function getProfilePhoto($member_id) {
+    function getProfilePhoto($member_id, $gender) {
         $this->db->where("member_id", $member_id);
         $this->db->where("status", "profile");
         $query = $this->db->get("shadi_profile_photos");
@@ -54,17 +54,17 @@ class Shadi_model extends CI_Model {
                 default:
                     $baselinkmain = base_url();
             }
-
+ $baselinkmain = base_url();
             $defaultImage = $baselinkmain . "assets/profile_image/" . $profilephoto->image;
         } else {
-            $defaultimageexe = $profilephoto->gender == 'Male' ? 'male.jpg' : 'female.jpg';
+            $defaultimageexe = $gender == 'Male' ? 'male.jpg' : 'female.jpg';
             $defaultImage = base_url() . "assets/emoji/$defaultimageexe";
         }
 
         return $defaultImage;
     }
 
-    function getProfilePhotoAll($member_id) {
+    function getProfilePhotoAll($member_id, $gender="Male") {
 //        echo "===".$gender."===";
 
         $this->db->where("member_id", $member_id);
@@ -88,7 +88,7 @@ class Shadi_model extends CI_Model {
                 array_push($imagelist, $image);
             }
         } else {
-            $defaultimageexe = $profilephoto->gender == 'Male' ? 'male.jpg' : 'female.jpg';
+            $defaultimageexe = $gender == 'Male' ? 'male.jpg' : 'female.jpg';
             $defaultImage = base_url() . "assets/emoji/$defaultimageexe";
             array_push($imagelist, $defaultImage);
         }
@@ -116,9 +116,13 @@ order by sbp.id desc";
         $profile = $query_m->row_array();
         $profile["community"] = $profile["community"] ? $profile["community"] : "-";
 
-        $profile_image = $this->getProfilePhoto($member_id);
+        $profile_image = $this->getProfilePhoto($member_id, $profile["gender"]);
         $profile['profile_image'] = $profile_image;
-        return $profile;
+        $resutdata = array();
+        foreach ($profile as $key => $value) {
+            $resutdata[$key] = $value ? $value : "";
+        }
+        return $resutdata;
     }
 
     function getShadiProfileById($member_id) {
@@ -126,8 +130,12 @@ order by sbp.id desc";
         $query = $this->db->get("shadi_profile");
         $basicdata = $query->row();
 
-        $profileiamge = $this->getProfilePhoto($member_id);
+        $profileiamge = $this->getProfilePhoto($member_id, $basicdata->gender);
         $basicdata->profile_photo = $profileiamge;
+
+        $basicdata->profile_photo_all = $this->getProfilePhotoAll($member_id,  $basicdata->gender);
+
+        $basicdata->baseProfile = $this->Shadi_model->getShortInformation($member_id);
 
         //community
         $religion = $this->Curd_model->get_single("set_community_category", $basicdata->religion);
@@ -139,7 +147,7 @@ order by sbp.id desc";
         //
         //mother tounge
         $mother_tongue = $this->Curd_model->get_single("set_mother_tongue", $basicdata->mother_tongue);
-        $basicdata->mother_tongue_title = $mother_tongue->title;
+        $basicdata->mother_tongue_title = $mother_tongue ? $mother_tongue->title : "";
         //end fo mother tounge
         //
         //qualification
@@ -185,8 +193,13 @@ order by sbp.id desc";
         } else {
             $basicdata->career_profession_category_title = "";
         }
+        $ressultdata = array();
+        foreach ($basicdata as $key => $value) {
+            $ressultdata[$key] = $value ? $value : "";
+        }
+
         //end fo profession
-        return $basicdata;
+        return $ressultdata;
     }
 
 }
