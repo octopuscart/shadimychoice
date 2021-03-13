@@ -141,7 +141,7 @@ order by sbp.id desc";
 
         $basicdata->profile_photo_all = $this->getProfilePhotoAll($member_id, $basicdata->gender);
 
-//        $basicdata->baseProfile = $this->Shadi_model->getShortInformation($member_id);
+        $basicdata->baseProfile = $this->Shadi_model->getShortInformation($member_id);
         //community
         $religion = $this->Curd_model->get_single("set_community_category", $basicdata->religion);
         $basicdata->religion_title = $religion->title;
