@@ -107,32 +107,7 @@ class FrontApi extends REST_Controller
         $this->response($memberArray);
     }
 
-    function getProfilePhoto($member_id)
-    {
-        $defaultImage = base_url() . "assets/emoji/user.png";
-        $this->db->where("member_id", $member_id);
-        $this->db->where("status", "profile");
-        $query = $this->db->get("shadi_profile_photos");
-        $profilephoto = $query->row();
-        if ($profilephoto) {
-            $defaultImage = base_url() . "assets/profile_image/" . $profilephoto->image;
-        }
-        return $defaultImage;
-    }
-
-    function getProfilePhotosAll($member_id)
-    {
-        $defaultImage = base_url() . "assets/emoji/user.png";
-        $this->db->where("member_id", $member_id);
-        $query = $this->db->get("shadi_profile_photos");
-        $profilephoto = $query->result();
-        $photoarray = [];
-        foreach ($profilephoto as $key => $value) {
-            $image = base_url() . "assets/profile_image/" . $value->image;
-            array_push($photoarray, $image);
-        }
-        return $photoarray;
-    }
+ 
 
     function getShadiProfileById_get($member_id)
     {

@@ -37,8 +37,11 @@ class Shadi_model extends CI_Model {
         return $finaldata;
     }
 
-    function getProfilePhoto($member_id, $gender) {
+    function getProfilePhoto($member_id, $gender, $list_type = "private") {
         $this->db->where("member_id", $member_id);
+        if ($list_type == "public") {
+            $this->db->where("photo_status!=", "inactive");
+        }
         $this->db->where("status", "profile");
         $query = $this->db->get("shadi_profile_photos");
         $profilephoto = $query->row();
@@ -54,7 +57,7 @@ class Shadi_model extends CI_Model {
                 default:
                     $baselinkmain = base_url();
             }
- $baselinkmain = base_url();
+            $baselinkmain = base_url();
             $defaultImage = $baselinkmain . "assets/profile_image/" . $profilephoto->image;
         } else {
             $defaultimageexe = $gender == 'Male' ? 'male.jpg' : 'female.jpg';
@@ -64,9 +67,11 @@ class Shadi_model extends CI_Model {
         return $defaultImage;
     }
 
-    function getProfilePhotoAll($member_id, $gender="Male") {
+    function getProfilePhotoAll($member_id, $gender = "Male", $list_type = "private") {
 //        echo "===".$gender."===";
-
+        if ($list_type == "public") {
+            $this->db->where("photo_status!=", "inactive");
+        }
         $this->db->where("member_id", $member_id);
         $query = $this->db->get("shadi_profile_photos");
         $profilephoto = $query->result();
@@ -81,6 +86,7 @@ class Shadi_model extends CI_Model {
             default:
                 $baselinkmain = base_url();
         }
+        $baselinkmain = base_url();
         $imagelist = [];
         if ($profilephoto) {
             foreach ($profilephoto as $key => $value) {
@@ -116,7 +122,7 @@ order by sbp.id desc";
         $profile = $query_m->row_array();
         $profile["community"] = $profile["community"] ? $profile["community"] : "-";
 
-        $profile_image = $this->getProfilePhoto($member_id, $profile["gender"]);
+        $profile_image = $this->getProfilePhoto($member_id, $profile["gender"], "public");
         $profile['profile_image'] = $profile_image;
         $resutdata = array();
         foreach ($profile as $key => $value) {
@@ -133,10 +139,9 @@ order by sbp.id desc";
         $profileiamge = $this->getProfilePhoto($member_id, $basicdata->gender);
         $basicdata->profile_photo = $profileiamge;
 
-        $basicdata->profile_photo_all = $this->getProfilePhotoAll($member_id,  $basicdata->gender);
+        $basicdata->profile_photo_all = $this->getProfilePhotoAll($member_id, $basicdata->gender);
 
-        $basicdata->baseProfile = $this->Shadi_model->getShortInformation($member_id);
-
+//        $basicdata->baseProfile = $this->Shadi_model->getShortInformation($member_id);
         //community
         $religion = $this->Curd_model->get_single("set_community_category", $basicdata->religion);
         $basicdata->religion_title = $religion->title;
@@ -200,6 +205,38 @@ order by sbp.id desc";
 
         //end fo profession
         return $ressultdata;
+    }
+
+    function checkProfileCompletion($member_id) {
+        $this->db->where("member_id", $member_id);
+        $query = $this->db->get("shadi_profile");
+        $basicdata = $query->row();
+        $completStepts = array();
+        $profileiamge = $this->getProfilePhoto($member_id, $basicdata->gender);
+        $photosall = $this->getProfilePhotoAll($member_id, $basicdata->gender);
+
+        $this->db->where("member_id", $member_id);
+        $query = $this->db->get("shadi_profile_contact");
+        $profileContact = $query->result_array();
+        if ($profileContact) {
+            
+        } else {
+            array_push($completStepts, array("title" => "Please add contact Information", "link" => "ShadiProfile/profileContact/$member_id"));
+        }
+        if ($photosall) {
+            
+        } else {
+            array_push($completStepts, array("title" => "Add your phots", "link" => "ShadiProfile/profilePhotos/$member_id"));
+        }
+        if ($basicdata->father_name == "") {
+            array_push($completStepts, array("title" => "Add your family details", "link" => "ShadiProfile/editMemberProfile/$member_id?family"));
+        }
+
+
+        $basicparameter = [
+            "height",
+            "mother_tongue",
+        ];
     }
 
 }

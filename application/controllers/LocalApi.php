@@ -246,7 +246,7 @@ order by sbp.id desc
             if ($manager) {
                 $profile["agent"] = $manager['first_name'] . " " . $manager['last_name'];
             }
-            $profileiamge = $this->Shadi_model->getProfilePhoto($value['member_id']);
+            $profileiamge = $this->Shadi_model->getProfilePhoto($value['member_id'], $value['gender']);
             $profile['profileimage'] = $profileiamge;
 
             $profile['location'] = $value['city'] . ", " . $value['state'];

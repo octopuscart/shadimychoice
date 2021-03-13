@@ -243,6 +243,7 @@ class ShadiProfile extends CI_Controller {
                 'status' => "",
                 'datetime' => date("Y-m-d H:m:s"),
                 'display_index' => 0,
+                 "photo_status"=>"inactive",
             );
             $this->db->insert('shadi_profile_photos', $post_data);
             $siteurlredirect = $this->input->post("siteurl");
