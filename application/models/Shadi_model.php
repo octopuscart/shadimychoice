@@ -116,7 +116,7 @@ left join set_profession as prof on sbp.career_profession = prof.id
 left join set_profession_category as profc on profc.id = prof.category_id
 
 left join  set_annual_income as ai on ai.id = sbp.career_income
-where status = 'Active' and member_id = '$member_id'
+where  member_id = '$member_id'
 order by sbp.id desc";
         $query_m = $this->db->query($query);
         $profile = $query_m->row_array();
@@ -140,6 +140,9 @@ order by sbp.id desc";
         $basicdata->profile_photo = $profileiamge;
 
         $basicdata->profile_photo_all = $this->getProfilePhotoAll($member_id, $basicdata->gender);
+
+        $basicdata->steps = $this->checkProfileCompletion($member_id);
+        $basicdata->status = $basicdata->steps["status"];
 
         $basicdata->baseProfile = $this->Shadi_model->getShortInformation($member_id);
         //community
@@ -212,18 +215,22 @@ order by sbp.id desc";
         $query = $this->db->get("shadi_profile");
         $basicdata = $query->row();
         $completStepts = array();
-        $profileiamge = $this->getProfilePhoto($member_id, $basicdata->gender);
-        $photosall = $this->getProfilePhotoAll($member_id, $basicdata->gender);
+        $this->db->where("member_id", $member_id);
+        $query = $this->db->get("shadi_profile_photos");
+        $profilephoto = $query->result();
 
         $this->db->where("member_id", $member_id);
         $query = $this->db->get("shadi_profile_contact");
         $profileContact = $query->result_array();
+        
+        $sttepdata = array("status"=>$basicdata->status);
+        
         if ($profileContact) {
             
         } else {
             array_push($completStepts, array("title" => "Please add contact Information", "link" => "ShadiProfile/profileContact/$member_id"));
         }
-        if ($photosall) {
+        if ($profilephoto) {
             
         } else {
             array_push($completStepts, array("title" => "Add your phots", "link" => "ShadiProfile/profilePhotos/$member_id"));
@@ -232,11 +239,35 @@ order by sbp.id desc";
             array_push($completStepts, array("title" => "Add your family details", "link" => "ShadiProfile/editMemberProfile/$member_id?family"));
         }
 
+            
+        $basicparameter = array(
+            "height" => "Your Height",
+            "mother_tongue" => "Mother Tongue",
+            "community" => "Community",
+            "birth_location_city" => "Birth Location",
+            "father_status" => "Father Working Status",
+            "mother_status" => "Mother Working Status",
+            "family_type" => "Family Type",
+            "family_value" => "Family Value",
+            "family_affluence" => "Family Affluence"
+        );
+        foreach ($basicparameter as $key => $value) {
+            if ($basicdata->$key == "") {
+                array_push($completStepts, array("title" => "$value", "link" => "ShadiProfile/editMemberProfile/$member_id?family"));
+            }
+        }
+        $totalsteps = 10;
+        $totalpercentt = $totalsteps - count($completStepts);
+        $totalpercent = ($totalpercentt * 100) / $totalsteps;
+        if ($totalpercent == 100) {
+            $this->db->where("member_id", $member_id);
+            $this->db->set(array("status" => "Review"));
+            $this->db->update("shadi_profile_photos");
+            $sttepdata['status'] = "Review";
+        }
 
-        $basicparameter = [
-            "height",
-            "mother_tongue",
-        ];
+//        print_r($completStepts);
+        return $sttepdata;
     }
 
 }
