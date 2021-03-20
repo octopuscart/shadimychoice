@@ -71,6 +71,7 @@ $this->load->view('layout/topmenu');
                                     <th style="width: 75px;">Gender</th>
                                     <th style="width: 100px;">Cast</th>
                                     <th style="width: 100px;">Location</th>
+                                    <th style="width: 100px;">Status</th>
                                     <?php
                                     if ($usertype == 'Admin') {
                                         ?>
@@ -118,6 +119,7 @@ $this->load->view('layout/footer');
             {"data": "gender"},
             {"data": "cast"},
             {"data": "location"},
+             {"data": "status"},
 <?php
 if ($usertype == 'Admin') {
     ?>

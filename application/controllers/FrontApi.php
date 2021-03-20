@@ -3,11 +3,9 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 require(APPPATH . 'libraries/REST_Controller.php');
 
-class FrontApi extends REST_Controller
-{
+class FrontApi extends REST_Controller {
 
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
         $this->load->model('Shadi_model');
         $this->load->library('session');
@@ -16,10 +14,9 @@ class FrontApi extends REST_Controller
         $this->user_id = $this->session->userdata('logged_in')['login_id'];
     }
 
-    public function memberFilterApi_get()
-    {
+    public function memberFilterApi_get() {
         $this->db->select("member_id, career_income, religion, career_sector, career_profession, "
-            . "family_location_state, mother_tongue, family_location_city, high_qualification");
+                . "family_location_state, mother_tongue, family_location_city, high_qualification");
         $this->db->order_by("id desc");
         //        $query = $this->db->where("gender", "Female");
         $query = $this->db->get("shadi_profile");
@@ -73,8 +70,7 @@ class FrontApi extends REST_Controller
         $this->response(array("filter" => $filterdata, "total_members" => count($result)));
     }
 
-    public function memberListApi_get()
-    {
+    public function memberListApi_get() {
         $attrdatak = $this->get();
         $products = [];
         $countpr = 0;
@@ -83,7 +79,7 @@ class FrontApi extends REST_Controller
         unset($attrdatak["start"]);
         unset($attrdatak["end"]);
         $this->db->select("member_id, career_income, religion, career_sector, career_profession, gender, "
-            . "family_location_state, mother_tongue, family_location_city, high_qualification");
+                . "family_location_state, mother_tongue, family_location_city, high_qualification");
         $this->db->order_by("id desc");
         $this->db->limit(16, $startpage);
         //        $query = $this->db->where("gender", "Female");
@@ -107,18 +103,16 @@ class FrontApi extends REST_Controller
         $this->response($memberArray);
     }
 
- 
-
-    function getShadiProfileById_get($member_id)
-    {
+    function getShadiProfileById_get($member_id) {
         $basicdata = $this->Shadi_model->getShadiProfileById($member_id);
+        $profileData = array();
+        foreach ($basicdata as $key => $value) {
+            $profileData[$key] = $value ? $value : "";
+        }
         $this->response($basicdata);
     }
 
-
-
-    function login_get()
-    {
+    function login_get() {
         $mobile_no = $this->get("mobile");
         $this->db->where("contact_no", $mobile_no);
         $query = $this->db->get("admin_users");
@@ -131,8 +125,7 @@ class FrontApi extends REST_Controller
         $this->response($data);
     }
 
-    function checklogin_get()
-    {
+    function checklogin_get() {
         $mobile_no = $this->get("mobile");
         $password = $this->get("otp");
         $this->db->where("password", md5($password));
@@ -147,8 +140,7 @@ class FrontApi extends REST_Controller
         $this->response($data);
     }
 
-    function managerMemberList_get($manager_id, $usertype)
-    {
+    function managerMemberList_get($manager_id, $usertype) {
         $userid = $manager_id;
 
         $start = intval($this->input->get("start"));
@@ -167,8 +159,9 @@ class FrontApi extends REST_Controller
 
 
         $this->db->select("member_id, career_income, religion, career_sector, career_profession, "
-            . "family_location_state, mother_tongue, family_location_city, high_qualification");
+                . "family_location_state, mother_tongue, family_location_city, high_qualification");
         if ($usertype == 'Admin') {
+            
         } else {
             $this->db->where("manager_id", $userid);
         }
@@ -193,8 +186,7 @@ class FrontApi extends REST_Controller
         $this->response($memberListFinal);
     }
 
-    function getCommunities_get()
-    {
+    function getCommunities_get() {
         $query = $this->db->get("set_community_category");
         $category = $query->result_array();
         $finaldata = [];
@@ -207,8 +199,7 @@ class FrontApi extends REST_Controller
         $this->response($finaldata);
     }
 
-    function sendSms_get()
-    {
+    function sendSms_get() {
         $api_key = '56038B83D0D233';
         $contacts = '8602648733';
         $from = 'FIVEDU';
@@ -226,8 +217,7 @@ class FrontApi extends REST_Controller
         echo $response;
     }
 
-    function getQualification_get()
-    {
+    function getQualification_get() {
         $set_qualification_category = $this->Curd_model->get("set_qualification_category");
         $set_qualification_dict = [];
         foreach ($set_qualification_category as $key => $value) {
@@ -240,8 +230,7 @@ class FrontApi extends REST_Controller
         $this->response($set_qualification_dict);
     }
 
-    function getProfession_get()
-    {
+    function getProfession_get() {
         $set_profession_category = $this->Curd_model->get("set_profession_category");
         $set_profession_dict = [];
         foreach ($set_profession_category as $key => $value) {
@@ -254,15 +243,48 @@ class FrontApi extends REST_Controller
         $this->response($set_profession_dict);
     }
 
-    function professionSector_get()
-    {
+    function professionSector_get() {
         $set_profession_sector = $this->Curd_model->get("set_profession_sector");
+        array_push($set_profession_sector, array("id"=>"", "title"=>""));
         $this->response($set_profession_sector);
     }
 
-    function getTableData_get($tablename)
-    {
+    function getTableData_get($tablename) {
         $set_profession_sector = $this->Curd_model->get($tablename);
         $this->response($set_profession_sector);
     }
+
+    //add profile from mobile app
+
+    function addBaseProfile_post() {
+        $shadidata = $this->post();
+        $shadidata['status'] = "Active";
+        $this->db->insert("shadi_profile", $shadidata);
+        $last_id = $this->db->insert_id();
+        $profile_id = "SMC" . date("Ymd") . $last_id;
+        $this->db->where("id", $last_id);
+        $this->db->set("member_id", $profile_id);
+        $this->db->update("shadi_profile");
+
+        $this->db->where("member_id", $profile_id);
+        $query = $this->db->get("shadi_profile");
+        $resultdata = $query->row();
+        $this->response($resultdata);
+    }
+
+    function updateProfile_post() {
+        $shadidata = $this->post();
+        $profile_id = $shadidata["member_id"];
+        unset($shadidata["member_id"]);
+
+        $this->db->where("member_id", $profile_id);
+        $this->db->set($shadidata);
+        $this->db->update("shadi_profile");
+
+        $this->db->where("member_id", $profile_id);
+        $query = $this->db->get("shadi_profile");
+        $resultdata = $query->row();
+        $this->response($resultdata);
+    }
+
 }

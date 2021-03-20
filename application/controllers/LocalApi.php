@@ -214,14 +214,14 @@ class LocalApi extends REST_Controller
         }
 
 
-        $query_row = "SELECT member_id, name, gender, manager_id,
+        $query_row = "SELECT member_id, name, gender, manager_id, sbp.status as status,
             scc.title as religion, sc.title as community,
             lss.title as state, lsc.title as city  FROM shadi_profile as sbp
 left join set_states as lss on lss.id = sbp.family_location_state
 left join set_cities as lsc on lsc.id = sbp.family_location_city
 left join set_community_category as scc on scc.id = sbp.religion
 left join set_community as sc on sc.id = sbp.community
-where status = 'Active'  $searchfilter $managerfilter
+where status != 'Delete'  $searchfilter $managerfilter
 order by sbp.id desc
 ";
         $query_m = $this->db->query($query_row);
