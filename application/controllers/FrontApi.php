@@ -123,7 +123,7 @@ class FrontApi extends REST_Controller {
         $this->db->where('contact_no', $mobile_no);
         $this->db->update('admin_users');
         $api_key = '56038B83D0D233';
-        $testmode = 1;
+        $testmode = 0;
         $from = 'SHADMC';
         $message = "$otpcheck is your OTP to login to shadimychoice.com";
         if ($testmode == 0) {
