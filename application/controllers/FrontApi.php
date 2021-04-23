@@ -209,6 +209,48 @@ class FrontApi extends REST_Controller {
 
         $this->response($memberListFinal);
     }
+    
+     function managerMemberListAll_get() {
+      
+
+        $start = intval($this->input->get("start"));
+        $length = intval($this->input->get("length"));
+        $start = "0";
+        $length = "100";
+        $search = "";
+
+        //        $search = $this->input->get("search")['value'];
+
+        $managerfilter = "";
+
+
+        $searchfilter = "";
+
+
+
+        $this->db->select("member_id, career_income, religion, career_sector, career_profession, "
+                . "family_location_state, mother_tongue, family_location_city, high_qualification");
+     
+        $this->db->where("status", "active");
+
+        $this->db->order_by("id desc");
+        //        $this->db->limit(16, $startpage);
+        $query = $this->db->get("shadi_profile");
+        $memberListFinal1 = $query->result_array();
+        $memberListFinal = [];
+        foreach ($memberListFinal1 as $key => $value) {
+            $memberobj = $this->Shadi_model->getShortInformation($value['member_id']);
+            $tempobj = array();
+            foreach ($memberobj as $key1 => $value2) {
+                $tempobj[$key1] = $value2 ? $value2 : '-';
+            }
+            array_push($memberListFinal, $tempobj);
+        }
+
+
+
+        $this->response($memberListFinal);
+    }
 
     function getCommunities_get() {
         $query = $this->db->get("set_community_category");
