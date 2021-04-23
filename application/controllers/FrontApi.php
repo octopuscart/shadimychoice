@@ -152,7 +152,7 @@ class FrontApi extends REST_Controller {
     function checklogin_get() {
         $mobile_no = $this->get("mobile");
         $password = $this->get("otp");
-        $this->db->where("password", md5($password));
+        $this->db->where("login_otp", $password);
         $this->db->where("contact_no", $mobile_no);
         $query = $this->db->get("admin_users");
         $restul = $query->row();
