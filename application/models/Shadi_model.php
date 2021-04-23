@@ -271,7 +271,7 @@ order by sbp.id desc";
     }
 
     function sendOTPEmail($email, $message) {
-        echo $email;
+       
         setlocale(LC_MONETARY, 'en_US');
         $emailsender = EMAIL_SENDER;
         $sendername = EMAIL_SENDER_NAME;
@@ -284,7 +284,7 @@ order by sbp.id desc";
         $checkcode = REPORT_MODE;
         $this->email->message("$message", array(), true);
         $this->email->print_debugger();
-        echo $result = $this->email->send();
+         $result = $this->email->send();
     }
 
 }
