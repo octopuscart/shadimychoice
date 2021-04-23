@@ -117,28 +117,31 @@ class FrontApi extends REST_Controller {
         $this->db->where("contact_no", $mobile_no);
         $query = $this->db->get("admin_users");
         $restul = $query->row();
+      
         $otpcheck = rand(1000, 9999);
         $this->db->set('login_otp', $otpcheck);
         $this->db->where('contact_no', $mobile_no);
         $this->db->update('admin_users');
-         $api_key = '56038B83D0D233'; 
-        $testmode = 0; 
+        $api_key = '56038B83D0D233';
+        $testmode = 1;
         $from = 'SHADMC';
+        $message = "$otpcheck is your OTP to login to shadimychoice.com";
         if ($testmode == 0) {
-            $sms_text = urlencode("$otpcheck is your OTP to login to shadimychoice.com");
+            $sms_text = urlencode($message);
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, "http://sms.arasko.com/app/smsapi/index.php");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, "key=" . $api_key . "&campaign=10800&routeid=7&type=text&contacts=" . $contacts . "&senderid=" . $from . "&msg=" . $sms_text);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, "key=" . $api_key . "&campaign=10800&routeid=7&type=text&contacts=" . $mobile_no . "&senderid=" . $from . "&msg=" . $sms_text);
             $response = curl_exec($ch);
             curl_close($ch);
             $strvrfy = $response;
+//            print_r($strvrfy);
+        }
 
-          
-        } 
 
         if ($restul) {
+            $this->Shadi_model->sendOTPEmail($restul->email, $message);
             $data = array("status" => "success");
         } else {
             $data = array("status" => "filed");

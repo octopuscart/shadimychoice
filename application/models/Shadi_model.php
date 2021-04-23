@@ -222,9 +222,9 @@ order by sbp.id desc";
         $this->db->where("member_id", $member_id);
         $query = $this->db->get("shadi_profile_contact");
         $profileContact = $query->result_array();
-        
-        $sttepdata = array("status"=>$basicdata->status);
-        
+
+        $sttepdata = array("status" => $basicdata->status);
+
         if ($profileContact) {
             
         } else {
@@ -239,7 +239,7 @@ order by sbp.id desc";
             array_push($completStepts, array("title" => "Add your family details", "link" => "ShadiProfile/editMemberProfile/$member_id?family"));
         }
 
-            
+
         $basicparameter = array(
             "height" => "Your Height",
             "mother_tongue" => "Mother Tongue",
@@ -268,6 +268,23 @@ order by sbp.id desc";
 
 //        print_r($completStepts);
         return $sttepdata;
+    }
+
+    function sendOTPEmail($email, $message) {
+        echo $email;
+        setlocale(LC_MONETARY, 'en_US');
+        $emailsender = EMAIL_SENDER;
+        $sendername = EMAIL_SENDER_NAME;
+        $email_bcc = EMAIL_BCC;
+        $this->email->from(EMAIL_BCC, $sendername);
+        $this->email->to($email);
+        $this->email->bcc(EMAIL_BCC);
+        $subject = "Login OTP for Shadimychoice.com";
+        $this->email->subject($subject);
+        $checkcode = REPORT_MODE;
+        $this->email->message("$message", array(), true);
+        $this->email->print_debugger();
+        echo $result = $this->email->send();
     }
 
 }
