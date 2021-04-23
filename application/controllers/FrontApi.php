@@ -117,6 +117,27 @@ class FrontApi extends REST_Controller {
         $this->db->where("contact_no", $mobile_no);
         $query = $this->db->get("admin_users");
         $restul = $query->row();
+        $otpcheck = rand(1000, 9999);
+        $this->db->set('login_otp', $otpcheck);
+        $this->db->where('contact_no', $mobile_no);
+        $this->db->update('admin_users');
+
+        $testmode = 0; 
+        $from = 'SHADMC';
+        if ($testmode == 0) {
+            $sms_text = urlencode("$otpcheck is your OTP to login to shadimychoice.com");
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, "http://sms.arasko.com/app/smsapi/index.php");
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, "key=" . $api_key . "&campaign=10800&routeid=7&type=text&contacts=" . $contacts . "&senderid=" . $from . "&msg=" . $sms_text);
+            $response = curl_exec($ch);
+            curl_close($ch);
+            $strvrfy = $response;
+
+          
+        } 
+
         if ($restul) {
             $data = array("status" => "success");
         } else {
@@ -245,7 +266,7 @@ class FrontApi extends REST_Controller {
 
     function professionSector_get() {
         $set_profession_sector = $this->Curd_model->get("set_profession_sector");
-        array_push($set_profession_sector, array("id"=>"", "title"=>""));
+        array_push($set_profession_sector, array("id" => "", "title" => ""));
         $this->response($set_profession_sector);
     }
 
