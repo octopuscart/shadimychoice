@@ -300,10 +300,7 @@ order by sbp.id desc
     }
 
     function imagehandling_post($profile_id) {
-
-
         $type = "member";
-
         $ext1 = explode('.', $_FILES['picture']['name']);
         $ext = strtolower(end($ext1));
         $filename = $type . rand(1000, 10000) . '_' . $profile_id;
@@ -320,6 +317,20 @@ order by sbp.id desc
             'display_index' => 0,
         );
         $this->db->insert('shadi_profile_photos', $post_data);
+    }
+
+    function setProfileImage_get($profile_id, $image_id) {
+        $this->db->where("member_id", $profile_id);
+        $this->db->where("status", "profile");
+        $this->db->set(array("status" => ""));
+        $this->db->update("shadi_profile_photos");
+        $imageids = $this->input->post("photo_id");
+        $indexarray = array(
+            "status" => "profile",
+        );
+        $this->db->where("id", $image_id);
+        $this->db->set($indexarray);
+        $this->db->update("shadi_profile_photos");
     }
 
 }
