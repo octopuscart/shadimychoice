@@ -324,7 +324,7 @@ order by sbp.id desc
         $this->db->where("status", "profile");
         $this->db->set(array("status" => ""));
         $this->db->update("shadi_profile_photos");
-        $imageids = $this->input->post("photo_id");
+
         $indexarray = array(
             "status" => "profile",
         );
