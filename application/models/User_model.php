@@ -69,7 +69,7 @@ class User_model extends CI_Model {
     //get user detail by id
     function user_reports($user_type) {
 
-$this->db->order_by('id', 'desc');
+        $this->db->order_by('id', 'desc');
 
         $this->db->where(array('user_type' => $user_type, 'status!=' => 'Blocked'));
 

@@ -3,11 +3,9 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 require(APPPATH . 'libraries/REST_Controller.php');
 
-class LocalApi extends REST_Controller
-{
+class LocalApi extends REST_Controller {
 
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
         $this->checklogin = $this->session->userdata('logged_in');
         $this->load->model('Order_model');
@@ -16,14 +14,12 @@ class LocalApi extends REST_Controller
         $this->userdata = $this->session->userdata('logged_in');
     }
 
-    function testGet_get()
-    {
+    function testGet_get() {
         print_r($this->checklogin['user_type']);
     }
 
     //function for user settingt
-    function updateUserSession_post()
-    {
+    function updateUserSession_post() {
         $fieldname = $this->post('name');
         $value = $this->post('value');
         $pk_id = $this->post('pk');
@@ -40,8 +36,7 @@ class LocalApi extends REST_Controller
         }
     }
 
-    function updateUserClient_post()
-    {
+    function updateUserClient_post() {
         $fieldname = $this->post('name');
         $value = $this->post('value');
         $pk_id = $this->post('pk');
@@ -53,8 +48,7 @@ class LocalApi extends REST_Controller
         }
     }
 
-    function updateUser()
-    {
+    function updateUser() {
         $fieldname = $this->post('name');
         $value = $this->post('value');
         $pk_id = $this->post('pk');
@@ -67,8 +61,7 @@ class LocalApi extends REST_Controller
         }
     }
 
-    function updateAppointment_post()
-    {
+    function updateAppointment_post() {
         $fieldname = $this->post('name');
         $value = $this->post('value');
         $pk_id = $this->post('pk');
@@ -80,8 +73,7 @@ class LocalApi extends REST_Controller
         }
     }
 
-    function updateAppointmentTime_post()
-    {
+    function updateAppointmentTime_post() {
         $fieldname = $this->post('name');
         $value = $this->post('value');
         $pk_id = $this->post('pk');
@@ -94,8 +86,7 @@ class LocalApi extends REST_Controller
     }
 
     //function for curd update
-    function updateCurd_post()
-    {
+    function updateCurd_post() {
         $fieldname = $this->post('name');
         $value = $this->post('value');
         $pk_id = $this->post('pk');
@@ -109,8 +100,7 @@ class LocalApi extends REST_Controller
     }
 
     //function for curd update
-    function curd_get($table_name)
-    {
+    function curd_get($table_name) {
         $fieldname = $this->post('name');
         $value = $this->post('value');
         $pk_id = $this->post('pk');
@@ -123,8 +113,7 @@ class LocalApi extends REST_Controller
     }
 
     //function for product list
-    function deleteCurd_post($table_name)
-    {
+    function deleteCurd_post($table_name) {
         $fieldname = $this->post('name');
         $value = $this->post('value');
         $pk_id = $this->post('pk');
@@ -137,8 +126,7 @@ class LocalApi extends REST_Controller
     }
 
     //function for curd update
-    function cartUpdate_post()
-    {
+    function cartUpdate_post() {
         $fieldname = $this->post('name');
         $value = $this->post('value');
         $pk_id = $this->post('pk');
@@ -158,15 +146,12 @@ class LocalApi extends REST_Controller
         }
     }
 
-
-    function getTableData_get($tablename)
-    {
+    function getTableData_get($tablename) {
         $set_profession_sector = $this->Curd_model->get($tablename);
         $this->response($set_profession_sector);
     }
 
-    function notificationUpdate_get()
-    {
+    function notificationUpdate_get() {
         $this->db->order_by('id', 'desc');
         $this->db->limit(5);
         $query = $this->db->get('system_log');
@@ -174,27 +159,22 @@ class LocalApi extends REST_Controller
         $this->response($systemlog);
     }
 
-    function getSimpleTableDataById_get($tablename, $foreignkey, $category_id)
-    {
+    function getSimpleTableDataById_get($tablename, $foreignkey, $category_id) {
         $this->db->where($foreignkey, $category_id);
         $query = $this->db->get($tablename);
         $systemlog = $query->result_array();
         $this->response($systemlog);
     }
 
-    function getSimpleTableDataByPrId_get($tablename, $idname, $mainid)
-    {
+    function getSimpleTableDataByPrId_get($tablename, $idname, $mainid) {
         $this->db->where($idname, $mainid);
         $query = $this->db->get($tablename);
         $systemlog = $query->row();
         $this->response($systemlog);
     }
 
-
-
     //shadiApi
-    function profileListApi_get()
-    {
+    function profileListApi_get() {
         $userid = $this->userdata['login_id'];
         $draw = intval($this->input->get("draw"));
         $start = intval($this->input->get("start"));
@@ -204,6 +184,7 @@ class LocalApi extends REST_Controller
         $usertype = $this->userdata['user_type'];
         $managerfilter = "";
         if ($usertype == 'Admin') {
+            
         } else {
             $managerfilter = " and manager_id = $userid ";
         }
@@ -265,15 +246,13 @@ order by sbp.id desc
         $this->response($output);
     }
 
-    function getShadiProfileById_get($member_id)
-    {
+    function getShadiProfileById_get($member_id) {
         $basicdata = $this->Shadi_model->getShadiProfileById($member_id);
         $this->response($basicdata);
     }
 
     //function for curd update
-    function deleteShadiProfileById_post()
-    {
+    function deleteShadiProfileById_post() {
         $member_id = $this->post('member_id');
         if ($this->checklogin) {
             $this->db->set(array("status" => "Delete"));
@@ -283,8 +262,7 @@ order by sbp.id desc
         }
     }
 
-    function getShadiProfilePhotos_get($profile_id)
-    {
+    function getShadiProfilePhotos_get($profile_id) {
         $this->db->where("member_id", $profile_id);
         $this->db->order_by("display_index");
         $query = $this->db->get("shadi_profile_photos");
@@ -303,8 +281,8 @@ order by sbp.id desc
         $this->response(array("photos" => $photoarray, "profile" => $basicdata));
     }
 
-    function getShadiProfileContact_get($profile_id)
-    {
+    
+    function getShadiProfileContact_get($profile_id) {
         $this->db->where("member_id", $profile_id);
 
         $query = $this->db->get("shadi_profile_contact");
@@ -313,7 +291,6 @@ order by sbp.id desc
         foreach ($profileContact as $key => $value) {
             array_push($contactarray, $value);
         }
-
         $this->db->where("member_id", $profile_id);
         $query = $this->db->get("shadi_profile");
         $basicdata = $query->row();
@@ -322,4 +299,37 @@ order by sbp.id desc
 
         $this->response(array("contact" => $contactarray, "profile" => $basicdata));
     }
+
+    
+    function imagehandling_post($profile_id) {
+        $config['upload_path'] = 'assets/profile_image';
+        $config['allowed_types'] = '*';
+        if (isset($_POST['submit'])) {
+            $picture = '';
+            if (!empty($_FILES['images']['name'])) {
+                $temp1 = rand(100, 1000000);
+                $ext1 = explode('.', $_FILES['images']['name']);
+                $ext = strtolower(end($ext1));
+                $file_newname = $temp1 . $profile_id;
+                $config['file_name'] = $file_newname;
+                $this->load->library('upload', $config);
+                $this->upload->initialize($config);
+                if ($this->upload->do_upload('picture')) {
+                    $uploadData = $this->upload->data();
+                    $picture = $uploadData['file_name'];
+                } else {
+                    $picture = '';
+                }
+            }
+            $post_data = array(
+                'member_id' => $profile_id,
+                'image' => $picture,
+                'status' => "",
+                'datetime' => date("Y-m-d H:m:s"),
+                'display_index' => 0,
+            );
+            $this->db->insert('shadi_profile_photos', $post_data);
+        }
+    }
+
 }

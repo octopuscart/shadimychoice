@@ -69,6 +69,61 @@ class FrontApi extends REST_Controller {
         );
         $this->response(array("filter" => $filterdata, "total_members" => count($result)));
     }
+    public function memberFilterApiMobile_get() {
+                $this->db->select("member_id, career_income, religion, career_sector, career_profession, "
+                . "family_location_state, mother_tongue, family_location_city, high_qualification");
+        $this->db->order_by("id desc");
+        //        $query = $this->db->where("gender", "Female");
+        $query = $this->db->get("shadi_profile");
+        $result = $query->result_array();
+
+        $this->load->library('JsonSorting', $result);
+
+        $income = $this->jsonsorting->collect_data('career_income');
+        $incomelist = $this->Shadi_model->getTableIformation("set_annual_income", $income);
+
+
+        $religin = $this->jsonsorting->collect_data('religion');
+        $religinlist = $this->Shadi_model->getTableIformation("set_community_category", $religin);
+
+        $location_state = $this->jsonsorting->collect_data('family_location_state');
+        $location_state_list = $this->Shadi_model->getTableIformation("set_states", $location_state);
+
+        $family_location = $this->jsonsorting->data_combination('family_location_city', 'family_location_state');
+
+        $high_qualification = $this->jsonsorting->collect_data('high_qualification');
+
+        //        SELECT * FROM `set_qualification` as sq
+        //join set_qualification_category as sqc on sqc.id = sq.category_id
+        //where sq.id in (5,9,7,2,88,1,23,4,18,47,6,3,14,33,30,10)
+
+
+        $career_profession = $this->jsonsorting->collect_data('career_profession');
+        //        print_r($career_profession);
+
+
+        $mother_tongue = $this->jsonsorting->collect_data('mother_tongue');
+        $mother_tongue_list = $this->Shadi_model->getTableIformation("set_mother_tongue", $mother_tongue);
+
+
+        $career_sector = $this->jsonsorting->collect_data('career_sector');
+        $career_sector_list = $this->Shadi_model->getTableIformation("set_profession_sector", $career_sector);
+
+
+
+
+
+        $filterdata = array(
+           array("title" => "Religion", "data" => $religinlist),
+           array("title" => "State Living in", "data" => $location_state_list),
+            array("title" => "Annual Income", "data" => $incomelist),
+            array("title" => "Working With", "data" => $career_sector_list),
+          array("title" => "Mother Tongue", "data" => $mother_tongue_list),
+          array("title" => "Religion", "data" => $religinlist),
+          array("title" => "State Living in", "data" => $location_state_list),
+        );
+        $this->response(array("filter" => $filterdata, "total_members" => count($result)));
+    }
 
     public function memberListApi_get() {
         $attrdatak = $this->get();
