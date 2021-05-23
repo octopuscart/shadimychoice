@@ -260,9 +260,9 @@ order by sbp.id desc";
         $totalpercentt = $totalsteps - count($completStepts);
         $totalpercent = ($totalpercentt * 100) / $totalsteps;
         if ($totalpercent == 100) {
-            $this->db->where("member_id", $member_id);
-            $this->db->set(array("status" => "Review"));
-            $this->db->update("shadi_profile_photos");
+//            $this->db->where("member_id", $member_id);
+//            $this->db->set(array("status" => "Review"));
+//            $this->db->update("shadi_profile_photos");
             $sttepdata['status'] = "Review";
         }
 
