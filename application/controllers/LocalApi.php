@@ -18,7 +18,7 @@ class LocalApi extends REST_Controller {
         print_r($this->checklogin['user_type']);
     }
 
-    //function for user settingt
+//function for user settingt
     function updateUserSession_post() {
         $fieldname = $this->post('name');
         $value = $this->post('value');
@@ -85,7 +85,7 @@ class LocalApi extends REST_Controller {
         }
     }
 
-    //function for curd update
+//function for curd update
     function updateCurd_post() {
         $fieldname = $this->post('name');
         $value = $this->post('value');
@@ -99,7 +99,7 @@ class LocalApi extends REST_Controller {
         }
     }
 
-    //function for curd update
+//function for curd update
     function curd_get($table_name) {
         $fieldname = $this->post('name');
         $value = $this->post('value');
@@ -112,7 +112,7 @@ class LocalApi extends REST_Controller {
         }
     }
 
-    //function for product list
+//function for product list
     function deleteCurd_post($table_name) {
         $fieldname = $this->post('name');
         $value = $this->post('value');
@@ -125,7 +125,7 @@ class LocalApi extends REST_Controller {
         }
     }
 
-    //function for curd update
+//function for curd update
     function cartUpdate_post() {
         $fieldname = $this->post('name');
         $value = $this->post('value');
@@ -173,7 +173,7 @@ class LocalApi extends REST_Controller {
         $this->response($systemlog);
     }
 
-    //shadiApi
+//shadiApi
     function profileListApi_get() {
         $userid = $this->userdata['login_id'];
         $draw = intval($this->input->get("draw"));
@@ -251,7 +251,7 @@ order by sbp.id desc
         $this->response($basicdata);
     }
 
-    //function for curd update
+//function for curd update
     function deleteShadiProfileById_post() {
         $member_id = $this->post('member_id');
         if ($this->checklogin) {
@@ -281,7 +281,6 @@ order by sbp.id desc
         $this->response(array("photos" => $photoarray, "profile" => $basicdata));
     }
 
-    
     function getShadiProfileContact_get($profile_id) {
         $this->db->where("member_id", $profile_id);
 
@@ -300,37 +299,25 @@ order by sbp.id desc
         $this->response(array("contact" => $contactarray, "profile" => $basicdata));
     }
 
-    
     function imagehandling_post($profile_id) {
-        $config['upload_path'] = 'assets/profile_image';
-        $config['allowed_types'] = '*';
-        if (isset($_POST['submit'])) {
-            $picture = '';
-            if (!empty($_FILES[''
-                . '']['name'])) {
-                $temp1 = rand(100, 1000000);
-                $ext1 = explode('.', $_FILES['images']['name']);
-                $ext = strtolower(end($ext1));
-                $file_newname = $temp1 . $profile_id;
-                $config['file_name'] = $file_newname;
-                $this->load->library('upload', $config);
-                $this->upload->initialize($config);
-                if ($this->upload->do_upload('images')) {
-                    $uploadData = $this->upload->data();
-                    $picture = $uploadData['file_name'];
-                } else {
-                    $picture = '';
-                }
-            }
-            $post_data = array(
-                'member_id' => $profile_id,
-                'image' => $picture,
-                'status' => "",
-                'datetime' => date("Y-m-d H:m:s"),
-                'display_index' => 0,
-            );
-            $this->db->insert('shadi_profile_photos', $post_data);
-        }
+
+
+        $type = "member";
+        $ext = '.jpg';
+        $filename = $type . rand(1000, 10000) . '_' . $profile_id;
+
+        $actfilname = $type . '_image/' . $filename . $ext;
+
+        move_uploaded_file($_FILES["images"]['tmp_name'], 'assets/profile_image/' . $actfilname);
+
+        $post_data = array(
+            'member_id' => $profile_id,
+            'image' => $actfilname,
+            'status' => "",
+            'datetime' => date("Y-m-d H:m:s"),
+            'display_index' => 0,
+        );
+        $this->db->insert('shadi_profile_photos', $post_data);
     }
 
 }
