@@ -303,10 +303,12 @@ order by sbp.id desc
 
 
         $type = "member";
-        $ext = '.jpg';
+
+        $ext1 = explode('.', $_FILES['picture']['name']);
+        $ext = strtolower(end($ext1));
         $filename = $type . rand(1000, 10000) . '_' . $profile_id;
 
-        $actfilname = $type . '_image/' . $filename . $ext;
+        $actfilname = $filename . $ext;
 
         move_uploaded_file($_FILES["images"]['tmp_name'], 'assets/profile_image/' . $actfilname);
 
