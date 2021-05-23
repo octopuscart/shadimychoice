@@ -306,7 +306,8 @@ order by sbp.id desc
         $config['allowed_types'] = '*';
         if (isset($_POST['submit'])) {
             $picture = '';
-            if (!empty($_FILES['images']['name'])) {
+            if (!empty($_FILES[''
+                . '']['name'])) {
                 $temp1 = rand(100, 1000000);
                 $ext1 = explode('.', $_FILES['images']['name']);
                 $ext = strtolower(end($ext1));
@@ -314,7 +315,7 @@ order by sbp.id desc
                 $config['file_name'] = $file_newname;
                 $this->load->library('upload', $config);
                 $this->upload->initialize($config);
-                if ($this->upload->do_upload('picture')) {
+                if ($this->upload->do_upload('images')) {
                     $uploadData = $this->upload->data();
                     $picture = $uploadData['file_name'];
                 } else {
