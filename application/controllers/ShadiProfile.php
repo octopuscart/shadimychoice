@@ -385,8 +385,10 @@ class ShadiProfile extends CI_Controller {
         foreach ($basicdata as $key => $value) {
             $profileData[$key] = $value ? $value : "";
         }
-        $outputdata = array("fielddata"=>$fieldsdata, "data"=>$profileData);
+        
+        $outputdata = array("fielddata" => $fieldsdata, "data" => $profileData);
         setlocale(LC_MONETARY, 'en_US');
+        $this->load->helper('download');
         if (1) {
             error_reporting(0);
 
@@ -397,9 +399,15 @@ class ShadiProfile extends CI_Controller {
                 echo $html;
             } else {
                 ob_get_clean();
+                $filepath = base_url("assets/profile_pdf/$pdfFilePath");
+                $filepath_abc =  APPPATH ."../assets/profile_pdf/$pdfFilePath";
                 $this->load->library('m_pdf');
                 $this->m_pdf->pdf->WriteHTML($html);
-                $this->m_pdf->pdf->Output($pdfFilePath, $viewtyp);
+                $file = $this->m_pdf->pdf->Output($filepath_abc, $viewtyp);
+                $data = file_get_contents($filepath_abc);
+                //force download
+                $fileName = "profile.pdf";
+                force_download($fileName, $data);
             }
         }
     }
