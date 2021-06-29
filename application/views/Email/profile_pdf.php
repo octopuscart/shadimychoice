@@ -156,7 +156,7 @@ foreach ($data["profile_photo_all"] as $fkey => $fvalue) {
 
                 <td colspan="2"  style="text-align: center;padding: 10px;font-size: 12px;
                     font-family: sans-serif;">
-                    <img src="<?php echo $fvalue; ?>" style="width:500px">
+                    <img src="<?php echo $fvalue; ?>" style="width:700px">
 
                 </td>
 
