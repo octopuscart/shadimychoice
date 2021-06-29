@@ -309,7 +309,7 @@ class ShadiProfile extends CI_Controller {
         $this->load->view('shadiProfile/profileContact', $data);
     }
 
-    function downloaProfile($member_id) {
+    function downloaProfile($member_id, $viewtyp = "D") {
         $fieldsdata = [
             array(
                 "title" => "Religious Background",
@@ -399,7 +399,7 @@ class ShadiProfile extends CI_Controller {
                 ob_get_clean();
                 $this->load->library('m_pdf');
                 $this->m_pdf->pdf->WriteHTML($html);
-                $this->m_pdf->pdf->Output($pdfFilePath, "I");
+                $this->m_pdf->pdf->Output($pdfFilePath, $viewtyp);
             }
         }
     }

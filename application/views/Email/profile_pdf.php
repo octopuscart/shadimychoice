@@ -18,7 +18,7 @@
             <td><h2><?php echo $data["baseProfile"]["name"]; ?><br/><small style="font-size: 12px;color:gray">
                         <?php echo $data["baseProfile"]["profession"]; ?>
                     </small></h2></td>
-            <td rowspan="4">
+            <td rowspan="4" style="text-align: right;">
                 <img src="<?php echo $data["baseProfile"]["profile_image"]; ?>" style="    height: 150px;
 
                      background-position: top;
