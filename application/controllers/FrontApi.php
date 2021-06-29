@@ -314,7 +314,9 @@ class FrontApi extends REST_Controller {
         foreach ($category as $key => $value) {
             $this->db->where("category_id", $value["id"]);
             $query2 = $this->db->get("set_community");
-            $value["sub_category"] = $category = $query2->result_array();
+            $category = $query2->result_array();
+           $tempcat =  [array("id"=>"", "title"=>"")];
+            $value["sub_category"] = $category;
             array_push($finaldata, $value);
         }
         $this->response($finaldata);
@@ -406,6 +408,19 @@ class FrontApi extends REST_Controller {
         $query = $this->db->get("shadi_profile");
         $resultdata = $query->row();
         $this->response($resultdata);
+    }
+    
+     function getShadiProfileContact_get($profile_id) {
+        $this->db->where("member_id", $profile_id);
+
+        $query = $this->db->get("shadi_profile_contact");
+        $profileContact = $query->result_array();
+        $contactarray = array();
+        foreach ($profileContact as $key => $value) {
+            array_push($contactarray, $value);
+        }
+  
+        $this->response($contactarray);
     }
 
 }
