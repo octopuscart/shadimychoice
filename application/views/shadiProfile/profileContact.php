@@ -1,4 +1,4 @@
-<?php
+7<?php
 $this->load->view('layout/header');
 $this->load->view('layout/topmenu');
 ?>    

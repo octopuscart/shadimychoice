@@ -131,10 +131,22 @@ order by sbp.id desc";
         return $resutdata;
     }
 
+    function getProfileContact($member_id) {
+        $this->db->where("contact_no!=", "");
+        $this->db->where("member_id", $member_id);
+        $query = $this->db->get("shadi_profile_contact");
+        $contacts = $query->result_array();
+ 
+        return $contacts;
+    }
+
     function getShadiProfileById($member_id) {
         $this->db->where("member_id", $member_id);
         $query = $this->db->get("shadi_profile");
         $basicdata = $query->row();
+
+        $contactdata = $this->getProfileContact($member_id);
+        $basicdata->contact = $contactdata;
 
         $profileiamge = $this->getProfilePhoto($member_id, $basicdata->gender);
         $basicdata->profile_photo = $profileiamge;
@@ -271,7 +283,7 @@ order by sbp.id desc";
     }
 
     function sendOTPEmail($email, $message) {
-       
+
         setlocale(LC_MONETARY, 'en_US');
         $emailsender = EMAIL_SENDER;
         $sendername = EMAIL_SENDER_NAME;
@@ -284,7 +296,7 @@ order by sbp.id desc";
         $checkcode = REPORT_MODE;
         $this->email->message("$message", array(), true);
         $this->email->print_debugger();
-         $result = $this->email->send();
+        $result = $this->email->send();
     }
 
 }

@@ -15,8 +15,7 @@ class ShadiProfile extends CI_Controller {
         $this->load->model('Event_model');
         $this->curd = $this->load->model('Curd_model');
         $this->userdata = $this->session->userdata('logged_in');
-
-        
+        $this->load->model('Shadi_model');
     }
 
     public function addProfile() {
@@ -243,7 +242,7 @@ class ShadiProfile extends CI_Controller {
                 'status' => "",
                 'datetime' => date("Y-m-d H:m:s"),
                 'display_index' => 0,
-                 "photo_status"=>"inactive",
+                "photo_status" => "inactive",
             );
             $this->db->insert('shadi_profile_photos', $post_data);
             $siteurlredirect = $this->input->post("siteurl");
@@ -308,6 +307,101 @@ class ShadiProfile extends CI_Controller {
         }
 
         $this->load->view('shadiProfile/profileContact', $data);
+    }
+
+    function downloaProfile($member_id) {
+        $fieldsdata = [
+            array(
+                "title" => "Religious Background",
+                "elements" => [
+                    array("title" => "Religion", "field" => "religion_title"),
+                    array("title" => "Community", "field" => "community_title"),
+                    array("title" => "Other Religious", "field" => "other_religious_info"),
+                    array("title" => "Mother Tongue", "field" => "mother_tongue_title"),
+                ],
+            ),
+            array(
+                "title" => "Horoscope Information",
+                "elements" => [
+                    array("title" => "Birth State", "field" => "birth_location_state_title"),
+                    array("title" => "Birth City", "field" => "birth_location_city_title"),
+                    array("title" => "Birth Time", "field" => "time_of_birth"),
+                    array("title" => "Birth Date", "field" => "date_of_birth"),
+                    array("title" => "Mangalik", "field" => "manglik_status"),
+                ],
+            ),
+            array(
+                "title" => "Education & Career",
+                "elements" => [
+                    array("title" => "Highest Qualification", "field" => "high_qualification_title"),
+                    array(
+                        "title" => "Qualification Field",
+                        "field" => "high_qualification_category_title"
+                    ),
+                    array(
+                        "title" => "Higher Edu. College/School",
+                        "field" => "high_qualification_college"
+                    ),
+                    array("title" => "Qualification Details", "field" => "qualification_details"),
+                    array("title" => "Working With ", "field" => "career_sector_title"),
+                    array("title" => "Profession", "field" => "career_profession_title"),
+                    array(
+                        "title" => "Profession Area",
+                        "field" => "career_profession_category_title"
+                    ),
+                    array("title" => "Working Position", "field" => "career_position"),
+                    array("title" => "Employer Name", "field" => "career_employer"),
+                    array("title" => "Annual Income ", "field" => "career_income_title"),
+                ],
+            ),
+            array(
+                "title" => "Family",
+                "elements" => [
+                    array("title" => "Father Name", "field" => "father_name"),
+                    array("title" => "Work Stuatus", "field" => "father_status"),
+                    array("title" => "Work Info", "field" => "father_work"),
+                    array("title" => "Mother Name", "field" => "mother_name"),
+                    array("title" => "Work Stuatus", "field" => "mother_status"),
+                    array("title" => "Work Info", "field" => "mother_work"),
+                    array("title" => "State", "field" => "family_location_state_title"),
+                    array("title" => "City", "field" => "family_location_city_title"),
+                    array("title" => "Married Brothers", "field" => "brother_married"),
+                    array("title" => "Married Sisters", "field" => "sister_married"),
+                    array("title" => "Unmarried Brothers", "field" => "brother_unmarried"),
+                    array("title" => "Unmarried Sisters", "field" => "sister_unmarried"),
+                ],
+            ),
+            array(
+                "title" => "Family Type",
+                "elements" => [
+                    array("title" => "Living Type", "field" => "family_type"),
+                    array("title" => "Family values", "field" => "family_value"),
+                    array("title" => "Family Affluence", "field" => "family_affluence"),
+                ]
+            )
+        ];
+        $basicdata = $this->Shadi_model->getShadiProfileById($member_id);
+        $profileData = array();
+        foreach ($basicdata as $key => $value) {
+            $profileData[$key] = $value ? $value : "";
+        }
+        $outputdata = array("fielddata"=>$fieldsdata, "data"=>$profileData);
+        setlocale(LC_MONETARY, 'en_US');
+        if (1) {
+            error_reporting(0);
+
+            $html = $this->load->view('Email/profile_pdf', $outputdata, true);
+            $pdfFilePath = $member_id . ".pdf";
+            $checkcode = 0;
+            if ($checkcode == 1) {
+                echo $html;
+            } else {
+                ob_get_clean();
+                $this->load->library('m_pdf');
+                $this->m_pdf->pdf->WriteHTML($html);
+                $this->m_pdf->pdf->Output($pdfFilePath, "I");
+            }
+        }
     }
 
 }

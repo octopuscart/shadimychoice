@@ -237,7 +237,7 @@ $this->load->view('layout/topmenu');
                                                         <td>
                                                             <select name="community" class="form-control" ng-model="religious.sub_community" >
                                                                 <option value="">Select</option>
-                                                                <option value="{{cmt.title}}" label="{{cmt.title}}" ng-repeat="cmt in religious.sub_community_list">{{cmt.title}}</option>
+                                                                <option value="{{cmt.id}}" label="{{cmt.title}}" ng-repeat="cmt in religious.sub_community_list">{{cmt.title}}</option>
                                                             </select>
                                                         </td>
                                                     </tr>
