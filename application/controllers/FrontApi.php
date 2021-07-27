@@ -498,7 +498,7 @@ class FrontApi extends REST_Controller {
         $this->db->where("status", "active");
 
         $this->db->order_by("id desc");
-        $this->db->limit($limit, $startpage);
+        $this->db->limit($limit, $start);
         $query = $this->db->get("shadi_profile");
         $memberListFinal1 = $query->result_array();
         $memberListFinal = [];
