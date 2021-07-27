@@ -475,7 +475,7 @@ class FrontApi extends REST_Controller {
             $memberdata = $query->row();
             $userdata->member_profile_id = $memberdata->member_id;
         }
-        if ($restul) {
+        if ($userdata) {
             $data = array("status" => "success", "userdata" => $userdata);
         } else {
             $data = array("status" => "filed");
