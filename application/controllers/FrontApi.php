@@ -473,7 +473,11 @@ class FrontApi extends REST_Controller {
             $this->db->where("user_id", $userdata->id);
             $query = $this->db->get("shadi_profile");
             $memberdata = $query->row();
-            $userdata->member_profile_id = $memberdata->member_id;
+            if ($memberdata) {
+                $userdata->member_profile_id = $memberdata->member_id;
+            } else {
+                $userdata->member_profile_id = "";
+            }
         }
         if ($userdata) {
             $data = array("status" => "success", "userdata" => $userdata);
