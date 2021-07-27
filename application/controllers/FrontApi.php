@@ -467,16 +467,23 @@ class FrontApi extends REST_Controller {
         $this->db->where("otp", $password);
         $this->db->where("contact_no", $mobile_no);
         $query = $this->db->get("member_users");
-        $restul = $query->row();
+        $userdata = $query->row();
+
+        if ($userdata) {
+            $this->db->where("user_id", $restul->id);
+            $query = $this->db->get("shadi_profile");
+            $memberdata = $query->row();
+            $userdata->member_profile_id = $memberdata->member_id;
+        }
         if ($restul) {
-            $data = array("status" => "success", "userdata" => $restul);
+            $data = array("status" => "success", "userdata" => $userdata);
         } else {
             $data = array("status" => "filed");
         }
         $this->response($data);
     }
 
-    function membersList_get($limit=10, $start=0) {
+    function membersList_get($limit = 10, $start = 0) {
 
 
 
