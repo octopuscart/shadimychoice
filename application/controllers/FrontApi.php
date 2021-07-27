@@ -69,8 +69,9 @@ class FrontApi extends REST_Controller {
         );
         $this->response(array("filter" => $filterdata, "total_members" => count($result)));
     }
+
     public function memberFilterApiMobile_get() {
-                $this->db->select("member_id, career_income, religion, career_sector, career_profession, "
+        $this->db->select("member_id, career_income, religion, career_sector, career_profession, "
                 . "family_location_state, mother_tongue, family_location_city, high_qualification");
         $this->db->order_by("id desc");
         //        $query = $this->db->where("gender", "Female");
@@ -114,13 +115,13 @@ class FrontApi extends REST_Controller {
 
 
         $filterdata = array(
-           array("title" => "Religion", "data" => $religinlist),
-           array("title" => "State Living in", "data" => $location_state_list),
+            array("title" => "Religion", "data" => $religinlist),
+            array("title" => "State Living in", "data" => $location_state_list),
             array("title" => "Annual Income", "data" => $incomelist),
             array("title" => "Working With", "data" => $career_sector_list),
-          array("title" => "Mother Tongue", "data" => $mother_tongue_list),
-          array("title" => "Religion", "data" => $religinlist),
-          array("title" => "State Living in", "data" => $location_state_list),
+            array("title" => "Mother Tongue", "data" => $mother_tongue_list),
+            array("title" => "Religion", "data" => $religinlist),
+            array("title" => "State Living in", "data" => $location_state_list),
         );
         $this->response(array("filter" => $filterdata, "total_members" => count($result)));
     }
@@ -172,7 +173,7 @@ class FrontApi extends REST_Controller {
         $this->db->where("contact_no", $mobile_no);
         $query = $this->db->get("admin_users");
         $restul = $query->row();
-      
+
         $otpcheck = rand(1000, 9999);
         $this->db->set('login_otp', $otpcheck);
         $this->db->where('contact_no', $mobile_no);
@@ -264,9 +265,9 @@ class FrontApi extends REST_Controller {
 
         $this->response($memberListFinal);
     }
-    
-     function managerMemberListAll_get() {
-      
+
+    function managerMemberListAll_get() {
+
 
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
@@ -285,7 +286,7 @@ class FrontApi extends REST_Controller {
 
         $this->db->select("member_id, career_income, religion, career_sector, career_profession, "
                 . "family_location_state, mother_tongue, family_location_city, high_qualification");
-     
+
         $this->db->where("status", "active");
 
         $this->db->order_by("id desc");
@@ -315,7 +316,7 @@ class FrontApi extends REST_Controller {
             $this->db->where("category_id", $value["id"]);
             $query2 = $this->db->get("set_community");
             $category = $query2->result_array();
-           $tempcat =  [array("id"=>"", "title"=>"")];
+            $tempcat = [array("id" => "", "title" => "")];
             $value["sub_category"] = $category;
             array_push($finaldata, $value);
         }
@@ -409,8 +410,8 @@ class FrontApi extends REST_Controller {
         $resultdata = $query->row();
         $this->response($resultdata);
     }
-    
-     function getShadiProfileContact_get($profile_id) {
+
+    function getShadiProfileAuth_get($profile_id) {
         $this->db->where("member_id", $profile_id);
 
         $query = $this->db->get("shadi_profile_contact");
@@ -419,8 +420,100 @@ class FrontApi extends REST_Controller {
         foreach ($profileContact as $key => $value) {
             array_push($contactarray, $value);
         }
-  
+
         $this->response($contactarray);
+    }
+
+    function memberLogin_get() {
+        $mobile_no = $this->get("mobile");
+        $this->db->where("contact_no", $mobile_no);
+        $query = $this->db->get("member_users");
+        $restul = $query->row();
+
+        $otpcheck = rand(1000, 9999);
+        $this->db->set('otp', $otpcheck);
+        $this->db->where('contact_no', $mobile_no);
+        $this->db->update('member_users');
+        $api_key = '56038B83D0D233';
+        $testmode = 0;
+        $from = 'SHADMC';
+        $message = "$otpcheck is your OTP to login to shadimychoice.com";
+        if ($testmode == 0) {
+            $sms_text = urlencode($message);
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, "http://sms.arasko.com/app/smsapi/index.php");
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, "key=" . $api_key . "&campaign=10800&routeid=7&type=text&contacts=" . $mobile_no . "&senderid=" . $from . "&msg=" . $sms_text);
+            $response = curl_exec($ch);
+            curl_close($ch);
+            $strvrfy = $response;
+//            print_r($strvrfy);
+        }
+
+
+        if ($restul) {
+            $this->Shadi_model->sendOTPEmail($restul->email, $message);
+            $data = array("status" => "success");
+        } else {
+            $data = array("status" => "filed");
+        }
+        $this->response($data);
+    }
+
+    function checkMemberLogin_get() {
+        $mobile_no = $this->get("mobile");
+        $password = $this->get("otp");
+        $this->db->where("otp", $password);
+        $this->db->where("contact_no", $mobile_no);
+        $query = $this->db->get("member_users");
+        $restul = $query->row();
+        if ($restul) {
+            $data = array("status" => "success", "userdata" => $restul);
+        } else {
+            $data = array("status" => "filed");
+        }
+        $this->response($data);
+    }
+
+    function membersList_get($limit=10, $start=0) {
+
+
+        $start = "0";
+        $length = "100";
+        $search = "";
+
+        //        $search = $this->input->get("search")['value'];
+
+        $managerfilter = "";
+
+
+        $searchfilter = "";
+
+
+
+        $this->db->select("member_id, career_income, religion, career_sector, career_profession, "
+                . "family_location_state, mother_tongue, family_location_city, high_qualification");
+
+        $this->db->where("status", "active");
+
+        $this->db->order_by("id desc");
+        $this->db->limit($limit, $startpage);
+        $query = $this->db->get("shadi_profile");
+        $memberListFinal1 = $query->result_array();
+        $memberListFinal = [];
+        foreach ($memberListFinal1 as $key => $value) {
+            $memberobj = $this->Shadi_model->getShortInformation($value['member_id']);
+            $tempobj = array();
+            foreach ($memberobj as $key1 => $value2) {
+                $tempobj[$key1] = $value2 ? $value2 : '-';
+            }
+            array_push($memberListFinal, $tempobj);
+        }
+
+
+
+        $this->response($memberListFinal);
     }
 
 }
