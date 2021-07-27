@@ -479,8 +479,7 @@ class FrontApi extends REST_Controller {
     function membersList_get($limit=10, $start=0) {
 
 
-        $start = "0";
-        $length = "100";
+
         $search = "";
 
         //        $search = $this->input->get("search")['value'];
