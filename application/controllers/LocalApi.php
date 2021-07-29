@@ -227,8 +227,12 @@ order by sbp.id desc
             if ($manager) {
                 $profile["agent"] = $manager['first_name'] . " " . $manager['last_name'];
             }
+            else{
+                 $profile["agent"] = "";
+            }
             $profileiamge = $this->Shadi_model->getProfilePhoto($value['member_id'], $value['gender']);
             $profile['profileimage'] = $profileiamge;
+            $profile['image'] = "<div class='col-md-12 text-center'><img src='$profileiamge' height=70/></div>";
 
             $profile['location'] = $value['city'] . ", " . $value['state'];
             $profile['cast'] = $value['community'] . " (" . $value['religion'] . ")";

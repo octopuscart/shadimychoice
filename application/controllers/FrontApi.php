@@ -488,23 +488,12 @@ class FrontApi extends REST_Controller {
     }
 
     function membersList_get($limit = 10, $start = 0) {
-
-
-
         $search = "";
-
         //        $search = $this->input->get("search")['value'];
-
         $managerfilter = "";
-
-
         $searchfilter = "";
-
-
-
         $this->db->select("member_id, career_income, religion, career_sector, career_profession, "
                 . "family_location_state, mother_tongue, family_location_city, high_qualification");
-
         $this->db->where("status", "active");
 
         $this->db->order_by("id desc");
@@ -520,10 +509,42 @@ class FrontApi extends REST_Controller {
             }
             array_push($memberListFinal, $tempobj);
         }
-
-
-
         $this->response($memberListFinal);
+    }
+
+    function recentAddedMembersList_get($limit = 10, $start = 0) {
+        $search = "";
+        //        $search = $this->input->get("search")['value'];
+        $managerfilter = "";
+        $searchfilter = "";
+        $this->db->select("member_id, career_income, religion, career_sector, career_profession, "
+                . "family_location_state, mother_tongue, family_location_city, high_qualification");
+        $this->db->where("status", "active");
+
+
+        $this->db->order_by("id desc");
+        $this->db->limit($limit, $start);
+        $query = $this->db->get("shadi_profile");
+        $memberListFinal1 = $query->result_array();
+        $memberListFinal = [];
+        foreach ($memberListFinal1 as $key => $value) {
+            $memberobj = $this->Shadi_model->getShortInformation($value['member_id']);
+            $tempobj = array();
+            foreach ($memberobj as $key1 => $value2) {
+                $tempobj[$key1] = $value2 ? $value2 : '-';
+            }
+            array_push($memberListFinal, $tempobj);
+        }
+        $this->response($memberListFinal);
+    }
+
+    function mobileSliderImages_get() {
+        $slideimageslist = [
+            array("image" => "https://admin.shadimychoice.com/assets/media/9049951.jpg"),
+            array("image" => "https://admin.shadimychoice.com/assets/media/8286861.jpg"),
+            array("image" => "https://admin.shadimychoice.com/assets/media/7299051.jpg"),
+        ];
+        $this->response($slideimageslist);
     }
 
 }

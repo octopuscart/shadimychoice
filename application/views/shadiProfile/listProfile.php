@@ -66,6 +66,7 @@ $this->load->view('layout/topmenu');
                             <thead>
                                 <tr>
                                     <th style="width: 20px;">S.N.</th>
+                                    <th style="width:40px;">Image</th>
                                     <th style="width:40px;">Profile ID</th>
                                     <th style="width: 75px;">Name</th>
                                     <th style="width: 75px;">Gender</th>
@@ -114,12 +115,13 @@ $this->load->view('layout/footer');
             },
             "columns": [
             {"data": "sn"},
+            {"data": "image"},
             {"data": "member_id"},
             {"data": "name"},
             {"data": "gender"},
             {"data": "cast"},
             {"data": "location"},
-             {"data": "status"},
+            {"data": "status"},
 <?php
 if ($usertype == 'Admin') {
     ?>
