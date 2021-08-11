@@ -372,34 +372,35 @@ order by sbp.id desc";
         return array("order_id" => $orderid, "paytmChecksum" => $paytmChecksum);
     }
 
-    public function startPayment($payment_amount=10, $customer_id="", $order_id="") {
+    public function startPayment($order_id, $amount, $member_id) {
         $mid = $this->MID;
-        $orderid = "SMC" . date("YMDHMS");
+//        $orderid = "SMC" . date("Ymdhms");
         $mkey = $this->MKEY;
         $paytmParams = array();
         $paytmParams["body"] = array(
             "requestType" => "Payment",
             "mid" => "$mid",
             "websiteName" => $this->WEBSITE,
-            "orderId" => $orderid,
-            "callbackUrl" => site_url("Payment/paymentCallback"),
+            "orderId" => $order_id,
+            "callbackUrl" => "https://securegw.paytm.in/theia/paytmCallback?ORDER_ID=$order_id",
             "txnAmount" => array(
-                "value" => "10.00",
+                "value" => $amount,
                 "currency" => "INR",
             ),
             "userInfo" => array(
-                "custId" => "CUST_001",
+                "custId" => $member_id,
             ),
+            "disablePaymentMode"=>[array("mode"=>"BALANCE"), array("mode"=>"PPBL")]
         );
         $checksum = PaytmChecksum::generateSignature(json_encode($paytmParams["body"], JSON_UNESCAPED_SLASHES), $mkey);
         $paytmParams["head"] = array(
             "signature" => $checksum
         );
         $post_data = json_encode($paytmParams, JSON_UNESCAPED_SLASHES);
-        $url = $this->endpoint . "/initiateTransaction?mid=$mid&orderId=$orderid";
+        $url = $this->endpoint . "/initiateTransaction?mid=$mid&orderId=$order_id";
         $response = $this->useCurl($url, array("Content-Type: application/json"), $post_data);
-        return $txnid = ($response["body"]["txnToken"]);
-        redirect("Payment/paymentSubmit/$txnid/$orderid");
+        return  $response["body"];
+     
     }
 
 }

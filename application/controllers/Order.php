@@ -76,7 +76,7 @@ class Order extends CI_Controller {
 
         $data['systemlog'] = $systemlog;
 
-
+                    
         $this->load->view('Order/dashboard', $data);
     }
 

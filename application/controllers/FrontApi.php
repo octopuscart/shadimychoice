@@ -168,6 +168,7 @@ class FrontApi extends REST_Controller {
         $this->response($basicdata);
     }
 
+    //authenditcation api
     function login_get() {
         $mobile_no = $this->get("mobile");
         $this->db->where("contact_no", $mobile_no);
@@ -219,6 +220,37 @@ class FrontApi extends REST_Controller {
         }
         $this->response($data);
     }
+
+    function registration_post() {
+        $regdata = $this->post();
+        $contact_no = $regdata["phone"];
+        $name = $regdata["name"];
+        $email = $regdata["email"];
+        $this->db->where('contact_no', $contact_no);
+        $query = $this->db->get('member_users');
+        $user_details = $query->row();
+        $response = array("msg" => "", "status" => "100");
+        if ($user_details) {
+            $response['msg'] = 'User with this contact no. already registered.';
+        } else {
+            $userarray = array(
+                'name' => $name,
+                'contact_no' => $contact_no,
+                'email' => $email,
+                'password' => md5($contact_no),
+                'password2' => $contact_no,
+                "status" => "Active",
+                'registration_datetime' => date("Y-m-d h:i:s A")
+            );
+            $this->db->insert('member_users', $userarray);
+            $user_id = $this->db->insert_id();
+            $response['status'] = "200";
+            $response['msg'] = 'You have registerd successfully, Please login.';
+        }
+        $this->response($response);
+    }
+
+    //end of authentication api
 
     function managerMemberList_get($manager_id, $usertype) {
         $userid = $manager_id;
@@ -394,7 +426,7 @@ class FrontApi extends REST_Controller {
         $query = $this->db->get("shadi_profile");
         $resultdata = $query->row();
         $this->response($resultdata);
-    }
+    } 
 
     function updateProfile_post() {
         $shadidata = $this->post();
@@ -547,4 +579,123 @@ class FrontApi extends REST_Controller {
         $this->response($slideimageslist);
     }
 
+    function getPayTMPaymentToken_get($order_id, $amount, $member_id) {
+        $token = $this->Shadi_model->startPayment($order_id, $amount, $member_id);
+        $this->response($token);
+    }
+
+    function getPackageList_get() {
+
+        $this->db->order_by("id desc");
+
+        $query = $this->db->get("set_packages");
+        $packagelist = $query->result_array();
+        $this->response($packagelist);
+    }
+
+    //set membership 
+    function orderMembership_post() {
+        $membershipdata = $this->post();
+        $daylimit = $membershipdata['valid_days'];
+        $current_date = date("Y-m-d");
+        $current_time = date("H:m:s A");
+        $last_date = date('Y-m-d', strtotime($current_date . " + $daylimit days"));
+        $insertArray = array(
+            "member_id" => $membershipdata['member_id'],
+            "package_id" => $membershipdata['package_id'],
+            "contact_limit" => $membershipdata['contact_limit'],
+            "valid_days" => $membershipdata['valid_days'],
+            "order_id" => $membershipdata['order_id'],
+            "user_id" => $membershipdata['user_id'],
+            "last_date" => $last_date,
+            "price" => $membershipdata['price'],
+            "discount" => $membershipdata['discount'],
+            "final_price" => $membershipdata['final_price'],
+            "discount_coupon" => $membershipdata['discount_coupon'],
+            "payment_data" => $membershipdata['payment_data'],
+            "payment_date" => $current_date,
+            "payment_time" => $current_time,
+            "payment_mode" => $membershipdata['payment_mode'],
+            "payment_id" => "",
+            "status" => "Active"
+        );
+        $this->db->insert("shadi_member_package", $insertArray);
+        $last_id = $this->db->insert_id();
+        $responsedata = array("order_id" => $last_id);
+        $this->response($responsedata);
+    }
+
+    function ordersList_get($user_id) {
+        $this->db->where("user_id", $user_id);
+        $query = $this->db->get("shadi_member_package");
+        $orders_list = $query->result_array();
+        $this->response($orders_list);
+    }
+
+    function orderDetails_get($order_id) {
+        $this->db->where("id", $order_id);
+        $query = $this->db->get("shadi_member_package");
+        $order_details = $query->row_array();
+
+        $this->db->where("id", $order_details["package_id"]);
+        $query = $this->db->get("set_packages");
+        $packagedetails = $query->row_array();
+
+        $this->db->where("id", $order_details["user_id"]);
+        $query = $this->db->get("member_users");
+        $userdetails = $query->row_array();
+
+        $memberobj = $this->Shadi_model->getShortInformation($order_details['member_id']);
+
+        $resultdata = array(
+            "order_details" => $order_details,
+            "user_details" => $userdetails,
+            "package_details" => $packagedetails,
+            "member_details" => $memberobj
+        );
+        $this->response($resultdata);
+    }
+
+    function getCouponDiscount_get($coupon_code, $total_amount) {
+        $couponArray = array(
+            "coupon_id" => "0",
+            "coupon_code" => "",
+            "discount_amount" => 0,
+            "coupon_value" => 0,
+            "msg" => "Sorry Wrong Coupon Code"
+        );
+        if ($coupon_code == "SMC99") {
+            $coupon_discount = ($total_amount * 99) / 100;
+            $couponArray = array(
+                "coupon_id" => "1",
+                "coupon_code" => "SMC99",
+                "discount_amount" => $coupon_discount,
+                "msg" => "Coupon code applied successfully"
+            );
+        }
+
+        $this->response($couponArray);
+    }
+
+    //end of set membership
+    //connection api
+    function saveMemberProfile_post() {
+        $connectdata = $this->post();
+        $daylimit = $connectdata['valid_days'];
+        $current_date = date("Y-m-d");
+        $current_time = date("H:m:s A");
+        $insertArray = array(
+            "member_id" => $connectdata['member_id'],
+            "connect_member_id" => $connectdata['connect_member_id'],
+            "connect_date" => $current_date,
+            "connect_time" => $current_time,
+            "status" => "Active"
+        );
+        $this->db->insert("shadi_saved_profile", $insertArray);
+        $last_id = $this->db->insert_id();
+        $responsedata = array("connect_id" => $last_id);
+        $this->response($responsedata);
+    }
+
+    //end of connection api
 }

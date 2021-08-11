@@ -336,5 +336,7 @@ order by sbp.id desc
         $this->db->set($indexarray);
         $this->db->update("shadi_profile_photos");
     }
+    
+   
 
 }

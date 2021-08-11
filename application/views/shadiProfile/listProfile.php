@@ -115,7 +115,7 @@ $this->load->view('layout/footer');
             },
             "columns": [
             {"data": "sn"},
-            {"data": "image"},
+            {"data": "image"}, 
             {"data": "member_id"},
             {"data": "name"},
             {"data": "gender"},
