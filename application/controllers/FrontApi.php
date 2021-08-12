@@ -159,13 +159,20 @@ class FrontApi extends REST_Controller {
         $this->response($memberArray);
     }
 
-    function getShadiProfileById_get($member_id) {
+    function getShadiProfileById_get($member_id, $login_member_id = "") {
         $basicdata = $this->Shadi_model->getShadiProfileById($member_id);
         $profileData = array();
         foreach ($basicdata as $key => $value) {
             $profileData[$key] = $value ? $value : "";
         }
-        $this->response($basicdata);
+        $profileData["contact"] = $profileData["contact"] == "" ? [] : $profileData["contact"];
+        $checkconnection = $this->Shadi_model->checkConnection($member_id, $login_member_id);
+        if ($checkconnection) {
+            $profileData["connected"] = "yes";
+        } else {
+            $profileData["connected"] = "no";
+        }
+        $this->response($profileData);
     }
 
     //authenditcation api
@@ -426,7 +433,7 @@ class FrontApi extends REST_Controller {
         $query = $this->db->get("shadi_profile");
         $resultdata = $query->row();
         $this->response($resultdata);
-    } 
+    }
 
     function updateProfile_post() {
         $shadidata = $this->post();
@@ -681,9 +688,11 @@ class FrontApi extends REST_Controller {
     //connection api
     function saveMemberProfile_post() {
         $connectdata = $this->post();
-        $daylimit = $connectdata['valid_days'];
+        $responsearray = array("status" => "100", "connect_id" => "0", "title" => "Error", "message" => "Something went wrong please try again later.");
         $current_date = date("Y-m-d");
         $current_time = date("H:m:s A");
+        $memberpackage = $this->Shadi_model->getCurrentPackage($connectdata['member_id']);
+
         $insertArray = array(
             "member_id" => $connectdata['member_id'],
             "connect_member_id" => $connectdata['connect_member_id'],
@@ -691,10 +700,92 @@ class FrontApi extends REST_Controller {
             "connect_time" => $current_time,
             "status" => "Active"
         );
-        $this->db->insert("shadi_saved_profile", $insertArray);
-        $last_id = $this->db->insert_id();
-        $responsedata = array("connect_id" => $last_id);
-        $this->response($responsedata);
+        if ($memberpackage["status"] == "active") {
+            $this->db->insert("shadi_saved_profile", $insertArray);
+            $last_id = $this->db->insert_id();
+            if ($last_id) {
+                $responsearray["connect_id"] = $last_id;
+                $responsearray["status"] = "200";
+                $responsearray["title"] = "Connection Successful";
+                $responsearray["message"] = "You have connected to this member, now you can view contact details.";
+            }
+        } else {
+            $responsearray["status"] = "300";
+            $responsearray["title"] = "Unable to connect";
+            $responsearray["message"] = "You don't have active plan to connect this member please buy any package to active plan.";
+        }
+
+        $this->response($responsearray);
+    }
+
+    function membersListConnected_get($member_id, $limit = 10, $start = 0) {
+        $search = "";
+        //        $search = $this->input->get("search")['value'];
+        $managerfilter = "";
+        $searchfilter = "";
+        $this->db->select("connect_member_id");
+        $this->db->where("status", "Active");
+        $this->db->where("member_id", $member_id);
+        $this->db->group_by("connect_member_id");
+        $this->db->order_by("id desc");
+        $this->db->limit($limit, $start);
+        $query = $this->db->get("shadi_saved_profile");
+        $memberListFinal1 = $query->result_array();
+        $memberListFinal = [];
+        foreach ($memberListFinal1 as $key => $value) {
+            $memberobj = $this->Shadi_model->getShortInformation($value['connect_member_id']);
+            $tempobj = array();
+            foreach ($memberobj as $key1 => $value2) {
+                $tempobj[$key1] = $value2 ? $value2 : '-';
+            }
+            array_push($memberListFinal, $tempobj);
+        }
+        $this->db->select("count(id) as used_contact");
+        
+        $this->db->where("member_id", $member_id);
+        $query = $this->db->get("shadi_saved_profile");
+        $totalusedcontact = $query->row_array();
+        $this->response(array("list" => $memberListFinal, "count" => $totalusedcontact["used_contact"]));
+    }
+
+    function getCurrentPackageDetails_get($member_id) {
+        $packagedetails = $this->Shadi_model->getCurrentPackage($member_id);
+        $this->response($packagedetails);
+    }
+
+    function getShadiProfileContact_get($profile_id) {
+        $this->db->where("member_id", $profile_id);
+
+        $query = $this->db->get("shadi_profile_contact");
+        $profileContact = $query->result_array();
+        $contactarray = array();
+        foreach ($profileContact as $key => $value) {
+            array_push($contactarray, $value);
+        }
+        $this->db->where("member_id", $profile_id);
+        $query = $this->db->get("shadi_profile");
+        $basicdata = $query->row();
+        $profileiamge = $this->Shadi_model->getProfilePhoto($profile_id, $basicdata->gender);
+        $basicdata->profile_photo = $profileiamge;
+
+        $this->response($contactarray);
+    }
+
+    function updateContactData_post($editable) {
+        $connectdata = $this->post();
+        $connectdata['datetime'] = date("Y-m-d H:m:s");
+        $connectdata['status'] = "Active";
+        $connectdata['contact_no_status'] = "Not Verified";
+        $connectdata['member_id'] = $connectdata["member_id"];
+        $connectdata["contact_display"] = "Show to All";
+        if ($editable == '0') {
+            $this->db->insert("shadi_profile_contact", $connectdata);
+        } else {
+            $this->db->set($connectdata);
+            $this->db->where('id', $editable);
+            $this->db->update('shadi_profile_contact');
+        }
+        $this->response($responsearray);
     }
 
     //end of connection api

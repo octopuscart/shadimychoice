@@ -159,6 +159,67 @@ order by sbp.id desc";
         return $contacts;
     }
 
+    function daysBetween($dt1, $dt2) {
+        return date_diff(
+                        date_create($dt2),
+                        date_create($dt1)
+                )->format('%a');
+    }
+
+    function checkConnection($member_id, $login_member_id) {
+        $this->db->where("member_id", $login_member_id);
+        $this->db->where("connect_member_id", $member_id);
+        $query = $this->db->get("shadi_saved_profile");
+        $checkconnection = $query->row_array();
+        return $checkconnection;
+    }
+
+    function getCurrentPackage($member_id) {
+        $current_date = date("Y-m-d");
+        $this->db->select("package_id, last_date, valid_days, sum(contact_limit) as total_contacts, '' as title, '0' as validity, '' as image   ");
+        $this->db->where("member_id", $member_id);
+        $this->db->where("last_date>", $current_date);
+        $this->db->order_by("id desc");
+        $this->db->limit(1);
+        $query = $this->db->get("shadi_member_package");
+        $packageobj = $query->row_array();
+        if ($packageobj["total_contacts"]) {
+            $packageobj["status"] = "active";
+        } else {
+            $packageobj["status"] = "inactive";
+            $packageobj["total_contacts"] = "0";
+            $packageobj["last_date"] = "";
+            $packageobj["package_id"] = "";
+            $packageobj["valid_days"] = "";
+        }
+        $packageobj["contact_left"] = 0;
+        $packageobj["contact_used"] = 0;
+        if ($packageobj["status"] == "active") {
+            $this->db->where("id", $packageobj["package_id"]);
+            $query = $this->db->get("set_packages");
+            $packagedetails = $query->row_array();
+            $packageobj["title"] = $packagedetails["title"];
+            $packageobj["image"] = $packagedetails["image"];
+            $packageobj["validity"] = $this->daysBetween($current_date, $packageobj["last_date"]);
+
+            $this->db->select("count(id) as used_contact");
+            $this->db->where("member_id", $member_id);
+//            $this->db->group_by("connect_member_id");
+            $query = $this->db->get("shadi_saved_profile");
+            $totalusedcontact = $query->row_array();
+            $usedcontact = $totalusedcontact["used_contact"];
+            $packageobj["contact_used"] = $usedcontact;
+            $totalleft = ($packageobj["total_contacts"] - $usedcontact);
+            if ($totalleft > 0) {
+                
+            } else {
+                $packageobj["status"] = "inactive";
+            }
+            $packageobj["contact_left"] = "" . $totalleft;
+        }
+        return $packageobj;
+    }
+
     function getShadiProfileById($member_id) {
         $this->db->where("member_id", $member_id);
         $query = $this->db->get("shadi_profile");
@@ -169,6 +230,8 @@ order by sbp.id desc";
 
         $profileiamge = $this->getProfilePhoto($member_id, $basicdata->gender);
         $basicdata->profile_photo = $profileiamge;
+
+        $basicdata->profilepackage = $this->getCurrentPackage($member_id);
 
         $basicdata->profile_photo_all = $this->getProfilePhotoAll($member_id, $basicdata->gender);
 
@@ -226,12 +289,17 @@ order by sbp.id desc";
 
         $profession = $this->Curd_model->get_single("set_profession", $basicdata->career_profession);
         $basicdata->career_profession_title = $profession ? $profession->title : '';
+
         if ($profession) {
             $profession_category = $this->Curd_model->get_single("set_profession_category", $profession->category_id);
             $basicdata->career_profession_category_title = $profession_category ? $profession_category->title : '';
         } else {
             $basicdata->career_profession_category_title = "";
         }
+
+
+
+
         $ressultdata = array();
         foreach ($basicdata as $key => $value) {
             $ressultdata[$key] = $value ? $value : "";
@@ -390,7 +458,7 @@ order by sbp.id desc";
             "userInfo" => array(
                 "custId" => $member_id,
             ),
-            "disablePaymentMode"=>[array("mode"=>"BALANCE"), array("mode"=>"PPBL")]
+            "disablePaymentMode" => [array("mode" => "BALANCE"), array("mode" => "PPBL")]
         );
         $checksum = PaytmChecksum::generateSignature(json_encode($paytmParams["body"], JSON_UNESCAPED_SLASHES), $mkey);
         $paytmParams["head"] = array(
@@ -399,8 +467,7 @@ order by sbp.id desc";
         $post_data = json_encode($paytmParams, JSON_UNESCAPED_SLASHES);
         $url = $this->endpoint . "/initiateTransaction?mid=$mid&orderId=$order_id";
         $response = $this->useCurl($url, array("Content-Type: application/json"), $post_data);
-        return  $response["body"];
-     
+        return $response["body"];
     }
 
 }
