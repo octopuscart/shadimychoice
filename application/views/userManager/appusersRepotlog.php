@@ -116,7 +116,7 @@ function userReportFunction($users) {
         <div class="panel panel-inverse">
             <div class="panel-heading">
                 <h3 class="panel-title">
-                    App User Reports
+                    App User Access Log
 
                 </h3>
                 <div class="panel-tools">
