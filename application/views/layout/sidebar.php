@@ -81,7 +81,7 @@ $appuser_menu = array(
     "active" => "",
     "sub_menu" => array(
         "Users Reports" => site_url("UserManager/appUsersReport"),
-        "Access Reports" => site_url("UserManager/usersReportManager"),
+        "Access Reports" => site_url("UserManager/appUsersLog"),
     ),
 );
 if ($userdata['user_type'] == 'Admin') {
