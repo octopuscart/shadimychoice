@@ -209,15 +209,21 @@ class UserManager extends CI_Controller {
     }
 
     public function appUsersReport() {
-
         $this->db->order_by("id desc");
         $query = $this->db->get("member_users");
         $allusers = $query->result();
         $data['users_report'] = $allusers;
-        if ($this->user_type == 'Manager') {
-            redirect('UserManager/not_granted');
-        }
+      
         $this->load->view('userManager/appusersReport', $data);
+    }
+    
+    public function appUsersLog() {
+        $this->db->order_by("id desc");
+        $query = $this->db->get("member_users_log");
+        $allusers = $query->result();
+        $data['users_report'] = $allusers;
+     
+        $this->load->view('userManager/appusersRepotlog', $data);
     }
 
 }
