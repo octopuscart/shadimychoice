@@ -456,7 +456,7 @@ class FrontApi extends REST_Controller {
         $userlogarray = array(
             'source' => "Mobile App",
             'name' => $name,
-            'contact_no' => $mobile_no,
+            'contact_no' => $contact_no,
             'email' => $email,
             'otp' => "",
             "status" => "Registration",
