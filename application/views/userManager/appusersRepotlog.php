@@ -79,7 +79,7 @@ function userReportFunction($users) {
                         <td>
                             <span class="">
 
-                                <h3>  <?php echo $value->status; ?></h3>
+                                <h5>  <?php echo $value->status; ?></h5>
                                 <p><?php echo $value->remark; ?></p>
                             </span>
                         </td>
