@@ -39,10 +39,8 @@ class UserManager extends CI_Controller {
         $this->load->view('errors/404');
     }
 
- 
-
     public function usersReportManager() {
-  
+
         $data['users_manager'] = $this->User_model->user_reports("Agent");
         if ($this->user_type == 'Manager') {
             redirect('UserManager/not_granted');
@@ -50,8 +48,6 @@ class UserManager extends CI_Controller {
 
         $this->load->view('userManager/usersReport', $data);
     }
-
-  
 
     public function addManager() {
         $config['upload_path'] = 'assets_main/profile_image';
@@ -118,13 +114,13 @@ class UserManager extends CI_Controller {
     public function profile($userid) {
         $data = array();
         // echo password_hash('rasmuslerdorf', PASSWORD_DEFAULT)."\n";
-     
+
         $query = $this->db->get_where("admin_users", array("id" => $userid));
         $userdata = $query->row();
         $data['userdata'] = $userdata;
 
 
-  
+
         $data['country'] = array();
 
         $config['upload_path'] = 'assets/profile_image';
@@ -154,7 +150,7 @@ class UserManager extends CI_Controller {
             $this->db->where('id', $userid); //set column_name and value in which row need to update
             $this->db->update('admin_users');
             $this->userdata['image'] = $picture;
-            redirect("userManager/profile/".$userid);
+            redirect("userManager/profile/" . $userid);
         }
 
         if (isset($_POST['changePassword'])) {
@@ -187,7 +183,7 @@ class UserManager extends CI_Controller {
                     $this->db->where("id", $userid);
                     $this->db->update("admin_users");
 
-                    redirect("userManager/profile/".$userid);
+                    redirect("userManager/profile/" . $userid);
                 } else {
                     $message = array(
                         'title' => 'Password Error.',
@@ -212,6 +208,16 @@ class UserManager extends CI_Controller {
         $this->load->view('authentication/profile', $data);
     }
 
+    public function appUsersReport() {
 
+        $this->db->order_by("id desc");
+        $query = $this->db->get("member_users");
+        $allusers = $query->result();
+        $data['users_report'] = $allusers;
+        if ($this->user_type == 'Manager') {
+            redirect('UserManager/not_granted');
+        }
+        $this->load->view('userManager/appusersReport', $data);
+    }
 
 }

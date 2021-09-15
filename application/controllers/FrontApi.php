@@ -181,14 +181,21 @@ class FrontApi extends REST_Controller {
         $this->db->where("contact_no", $mobile_no);
         $query = $this->db->get("admin_users");
         $restul = $query->row();
+
         if ($mobile_no != "8602648733") {
             $otpcheck = rand(1000, 9999);
-            $this->db->set('login_otp', $otpcheck);
+            $updatearray = array(
+                'login_otp' => $otpcheck,
+                'op_date_time' => date("Y-m-d h:i:s A")
+            );
+            $this->db->set($updatearray);
             $this->db->where('contact_no', $mobile_no);
             $this->db->update('admin_users');
         } else {
             $otpcheck = "1212";
         }
+
+
         $api_key = '56038B83D0D233';
         $testmode = 0;
         $from = 'SHADMC';
@@ -213,6 +220,7 @@ class FrontApi extends REST_Controller {
         } else {
             $data = array("status" => "filed");
         }
+
         $this->response($data);
     }
 
@@ -229,35 +237,6 @@ class FrontApi extends REST_Controller {
             $data = array("status" => "filed");
         }
         $this->response($data);
-    }
-
-    function registration_post() {
-        $regdata = $this->post();
-        $contact_no = $regdata["phone"];
-        $name = $regdata["name"];
-        $email = $regdata["email"];
-        $this->db->where('contact_no', $contact_no);
-        $query = $this->db->get('member_users');
-        $user_details = $query->row();
-        $response = array("msg" => "", "status" => "100");
-        if ($user_details) {
-            $response['msg'] = 'User with this contact no. already registered.';
-        } else {
-            $userarray = array(
-                'name' => $name,
-                'contact_no' => $contact_no,
-                'email' => $email,
-                'password' => md5($contact_no),
-                'password2' => $contact_no,
-                "status" => "Active",
-                'registration_datetime' => date("Y-m-d h:i:s A")
-            );
-            $this->db->insert('member_users', $userarray);
-            $user_id = $this->db->insert_id();
-            $response['status'] = "200";
-            $response['msg'] = 'You have registerd successfully, Please login.';
-        }
-        $this->response($response);
     }
 
     //end of authentication api
@@ -466,6 +445,53 @@ class FrontApi extends REST_Controller {
         $this->response($contactarray);
     }
 
+    function registration_post() {
+        $regdata = $this->post();
+        $contact_no = $regdata["phone"];
+        $name = $regdata["name"];
+        $email = $regdata["email"];
+        $this->db->where('contact_no', $contact_no);
+        $query = $this->db->get('member_users');
+        $user_details = $query->row();
+        $userlogarray = array(
+            'source' => "Mobile App",
+            'name' => $name,
+            'contact_no' => $mobile_no,
+            'email' => $email,
+            'otp' => "",
+            "status" => "Registration",
+            'op_date' => date("Y-m-d"),
+            'op_time' => date("h:i:s A"),
+            "remark" => "",
+        );
+
+        $response = array("msg" => "", "status" => "100");
+        if ($user_details) {
+            $response['msg'] = 'User with this contact no. already registered.';
+            $userlogarray["status"] = "Registered Already";
+            $userlogarray["remark"] = "User with this contact no. already registered.";
+        } else {
+            $userarray = array(
+                'name' => $name,
+                'contact_no' => $contact_no,
+                'email' => $email,
+                'password' => md5($contact_no),
+                'password2' => $contact_no,
+                "status" => "Active",
+                'registration_datetime' => date("Y-m-d h:i:s A"),
+                'op_date_time' => date("Y-m-d h:i:s A")
+            );
+            $this->db->insert('member_users', $userarray);
+            $user_id = $this->db->insert_id();
+            $response['status'] = "200";
+            $response['msg'] = 'You have registerd successfully, Please login.';
+            $userlogarray["status"] = "Registration Success";
+            $userlogarray["remark"] = "User registerd successfully";
+        }
+        $this->db->insert('member_users_log', $userarray);
+        $this->response($response);
+    }
+
     function memberLogin_get() {
         $mobile_no = $this->get("mobile");
         $this->db->where("contact_no", $mobile_no);
@@ -481,7 +507,17 @@ class FrontApi extends REST_Controller {
         $this->db->where('contact_no', $mobile_no);
         $this->db->update('member_users');
 
-
+        $userlogarray = array(
+            'source' => "Mobile App",
+            'name' => "",
+            'contact_no' => $mobile_no,
+            'email' => "",
+            'otp' => $otpcheck,
+            "status" => "Login",
+            'op_date' => date("Y-m-d"),
+            'op_time' => date("h:i:s A"),
+            "remark" => "",
+        );
 
         $api_key = '56038B83D0D233';
         $testmode = 0;
@@ -504,9 +540,15 @@ class FrontApi extends REST_Controller {
         if ($restul) {
             $this->Shadi_model->sendOTPEmail($restul->email, $message);
             $data = array("status" => "success");
+            $userlogarray["status"] = "OTP Generated";
+            $userlogarray["remark"] = "Login OTP generated <b>$otpcheck</b>";
+//            $userlogarray["remark"] = "User login by OTP successfully";
         } else {
             $data = array("status" => "filed");
+            $userlogarray["status"] = "Login Failed";
+            $userlogarray["remark"] = "User record not found.";
         }
+        $this->db->insert('member_users_log', $userarray);
         $this->response($data);
     }
 
@@ -517,6 +559,17 @@ class FrontApi extends REST_Controller {
         $this->db->where("contact_no", $mobile_no);
         $query = $this->db->get("member_users");
         $userdata = $query->row();
+        $userlogarray = array(
+            'source' => "Mobile App",
+            'name' => "",
+            'contact_no' => $mobile_no,
+            'email' => "",
+            'otp' => $password,
+            "status" => "Login",
+            'op_date' => date("Y-m-d"),
+            'op_time' => date("h:i:s A"),
+            "remark" => "",
+        );
 
         if ($userdata) {
             $this->db->where("user_id", $userdata->id);
@@ -529,10 +582,15 @@ class FrontApi extends REST_Controller {
             }
         }
         if ($userdata) {
+            $userlogarray["status"] = "Login Successful";
+            $userlogarray["remark"] = "User login by OTP successfully";
             $data = array("status" => "success", "userdata" => $userdata);
         } else {
+            $userlogarray["status"] = "OTP Failed";
+            $userlogarray["remark"] = "Wroing OTP or mobile no.";
             $data = array("status" => "filed");
         }
+        $this->db->insert('member_users_log', $userarray);
         $this->response($data);
     }
 

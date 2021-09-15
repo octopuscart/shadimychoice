@@ -75,6 +75,18 @@ $user_menu = array(
 if ($userdata['user_type'] == 'Admin') {
     array_push($menu_control, $user_menu);
 }
+$appuser_menu = array(
+    "title" => "App Users management",
+    "icon" => "fa fa-mobile",
+    "active" => "",
+    "sub_menu" => array(
+        "Users Reports" => site_url("UserManager/appUsersReport"),
+        "Access Reports" => site_url("UserManager/usersReportManager"),
+    ),
+);
+if ($userdata['user_type'] == 'Admin') {
+    array_push($menu_control, $appuser_menu);
+}
 
 
 
