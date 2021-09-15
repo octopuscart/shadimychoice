@@ -488,7 +488,7 @@ class FrontApi extends REST_Controller {
             $userlogarray["status"] = "Registration Success";
             $userlogarray["remark"] = "User registerd successfully";
         }
-        $this->db->insert('member_users_log', $userarray);
+        $this->db->insert('member_users_log', $userlogarray);
         $this->response($response);
     }
 
@@ -548,7 +548,7 @@ class FrontApi extends REST_Controller {
             $userlogarray["status"] = "Login Failed";
             $userlogarray["remark"] = "User record not found.";
         }
-        $this->db->insert('member_users_log', $userarray);
+        $this->db->insert('member_users_log', $userlogarray);
         $this->response($data);
     }
 
@@ -590,7 +590,7 @@ class FrontApi extends REST_Controller {
             $userlogarray["remark"] = "Wroing OTP or mobile no.";
             $data = array("status" => "filed");
         }
-        $this->db->insert('member_users_log', $userarray);
+        $this->db->insert('member_users_log', $userlogarray);
         $this->response($data);
     }
 
